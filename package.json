@@ -1,0 +1,31 @@
+{
+    "name": "game-name",
+    "description": "Ett spel som skapats inom ramen för gymnasiearbetets forskning.",
+    "version": "1.0.0",
+    "type": "module",
+    "contributors": [
+        {
+            "name": "Daniil",
+            "email": "daniil.gurski@elev.ga.ntig.se"
+        },
+        {
+            "name": "Kamran",
+            "email": "kamran.allahverdi@elev.ga.ntig.se"
+        }
+
+    ],
+    "license": "MIT",
+    "scripts": {
+        "dev": "node log.js dev & vite --config vite/config.dev.mjs",
+        "build": "node log.js build & vite build --config vite/config.prod.mjs",
+        "dev-nolog": "vite --config vite/config.dev.mjs",
+        "build-nolog": "vite build --config vite/config.prod.mjs"
+    },
+    "devDependencies": {
+        "terser": "^5.31.0",
+        "vite": "^5.3.1"
+    },
+    "dependencies": {
+        "phaser": "^3.86.0"
+    }
+}
