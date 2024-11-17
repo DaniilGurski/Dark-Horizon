@@ -87,7 +87,7 @@ export class Story extends Scene
     {
         const { width, height } = this.sys.game.config;
         this.add.image(0, 0, 'story-bg').setOrigin(0, 0);
-        
+
         this.cursor = this.input.keyboard.createCursorKeys();
         this.typingSound = this.sound.add("typing", { loop: true }).setVolume(0.2);
 
@@ -124,3 +124,5 @@ export class Story extends Scene
         }
     }
 }
+
+// NOTE: Instead of a black screen you can use a slow zoom view of the planet ? 
