@@ -8,6 +8,7 @@ const playerConfig = {
     scale: 1.2,
     rotationAngle: 10, // Rotation angle in degrees
     rotationDuration: 50, // Duration of the rotation effect in milliseconds
+    shootCooldown: 1200,
     kickbackforce: 500,
 }
 
@@ -21,6 +22,7 @@ export default class Player {
         this.state = "idle"
         this.inAir = true; 
         this.isShooting = false;
+        this.reloading = false; 
         this.kickbackTween; 
 
         this.object = scene.physics.add.sprite(this.x, this.y, 'player').setSize(36, 45).setOffset(0.5, 0);
@@ -63,8 +65,13 @@ export default class Player {
 
     shoot() {
         this.isShooting = true;
+        this.reloading = true;
         this.setAnimation("player-shoot");
         this.startKickback();
+
+        this.scene.time.delayedCall(playerConfig.shootCooldown, () => {
+            this.reloading = false;
+        }, [])
     }
 
 
@@ -133,7 +140,7 @@ export default class Player {
         this.moving = direction !== DIRECTIONS.NONE;
         this.inAir = !this.object.body.onFloor();
 
-        if (shootKeyPressed) {
+        if (shootKeyPressed && !this.reloading) {
             this.shoot();
         }
 
