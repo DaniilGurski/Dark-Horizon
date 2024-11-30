@@ -1,0 +1,34 @@
+[
+    {
+        "asset": "player",
+        "key": "player-idle",
+        "prefix": "idle"
+    },
+
+    {
+        "asset": "player",
+        "key": "player-jump",
+        "prefix": "jump"
+    },
+
+    {
+        "asset": "player",
+        "key": "player-walk",
+        "prefix": "walk",
+        "end": 3,
+        "frameRate": 7,
+        "delay": 0,
+        "repeat": -1,
+        "yoyo": false
+    },
+
+    {
+        "asset": "player",
+        "key": "player-shoot",
+        "prefix": "shoot",
+        "end": 3,
+        "frameRate": 7,
+        "delay": 0,
+        "yoyo": false
+    }
+]

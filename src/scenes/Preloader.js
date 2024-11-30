@@ -26,11 +26,18 @@ export class Preloader extends Scene
 
     preload ()
     {
+        const playerFrameConfig = {
+            frameWidth: 32,
+            frameHeight: 32,
+        }
+
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
 
         // Data
         this.load.json("animations", "data/animations.json");
+        this.load.json("player-animations", "data/player-animations.json");
+        this.load.tilemapTiledJSON("box", "data/box.json");
         
         // Backgrounds
         this.load.image("story-bg", "backgrounds/darkness.png");
@@ -41,12 +48,15 @@ export class Preloader extends Scene
             frameWidth: 100,
             frameHeight: 100,
         })
+        this.load.atlas("player", "spritesheets/characters/player.png", "data/atlas/player.json");
+        // this.load.atlas("swinger", "spritesheets/characters/player.png", "data/atlas/player-atlas.json");
+
+        // Images
+        this.load.image("terrain-tileset", "tilesets/level-tileset.png");
         this.load.image("ship-1", "spritesheets/ship-1.png");
         this.load.image("ship-2", "spritesheets/ship-2.png");
         this.load.image("ship-3", "spritesheets/ship-3.png");
-        this.load.image("ship-particle", "spritesheets/particle.png");
         
-
         // UI
         this.load.image("cross-icon", "ui/cross.png");
         this.load.image("next-icon", "ui/next.png");
@@ -63,15 +73,17 @@ export class Preloader extends Scene
     {
         this.scene.start('Story');
         this.createAnimations();
+        this.createAtlasAnimations("player", "player-animations");
+        this.createAtlasAnimations("player", "player-animations");
     }
 
     createAnimations()
     {
         // Get animation data from cache
-        const animations = DataUtils.getAnimations(this);
+        const animations = DataUtils.getAnimations(this, "animations");
 
         animations.forEach((animation) => {
-            // Generate frames if there are any
+            // Generate frames if there are anys
             const frames = animation.frames ? 
             this.anims.generateFrameNumbers(animation.asset, { frames: animation.frames }) :
             this.anims.generateFrameNumbers(animation.asset)
@@ -81,8 +93,31 @@ export class Preloader extends Scene
                 frames: frames,
                 frameRate: animation.frameRate,
                 repeat: animation.repeat,
-                yoyo: animation.yoyo
+                yoyo: animation.yoyo,
             })
         })
+    }
+
+
+    createAtlasAnimations(atlas, requestedAnimations) {
+        const animations = DataUtils.getAnimations(this, requestedAnimations);
+
+        animations.forEach((animation) => {
+            this.anims.create({
+                key: animation.key,
+                frames: this.anims.generateFrameNames(atlas, {
+                    prefix: animation.prefix,
+                    end: animation.end ?? 0,
+                    zeroPad: animation.zeroPad ?? 4,
+                }),
+                frameRate: animation.frameRate,
+                repeat: animation.repeat,
+                yoyo: animation.yoyo,
+            })
+        })
+
+        
+        console.log("Atlas Animations created")
+        console.log(animations)
     }
 }

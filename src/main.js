@@ -3,8 +3,9 @@ import { Preloader } from './scenes/Preloader';
 import { Story } from './scenes/Story';
 import { Transition } from './scenes/Transition';
 import { Game } from './scenes/Game';
+import { LevelZero } from './scenes/levels/LevelZero';
 
-const GRAVITY_Y = 400;
+const GRAVITY_Y = 800;
 
 const config = {
     type: Phaser.CANVAS,
@@ -23,7 +24,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: GRAVITY_Y },
-            // debug: true, 
+            debug: false, 
         }
     },
 
@@ -32,7 +33,7 @@ const config = {
         Preloader,
         Story,
         Transition, 
-        Game
+        LevelZero,
     ]
 };
 
