@@ -56,11 +56,17 @@ export class Transition extends Scene
         
             this.time.delayedCall(2000, () => {                
                 this.sound.stopAll();
-                this.scene.start('Game');
+                this.scene.start('LevelZero');
             }, [], this);
 
         }, [], this);
+    }
 
-        // TODO: Make smoother sound transition
+    // skip cutscene
+    update() {
+        if (this.input.keyboard.checkDown(this.input.keyboard.addKey('SPACE'), 500)) {
+            this.sound.stopAll();
+            this.scene.start('LevelZero');
+        }
     }
 }
