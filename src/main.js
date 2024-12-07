@@ -24,7 +24,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: GRAVITY_Y },
-            debug: false, 
+            debug: true, 
         }
     },
 
@@ -34,7 +34,7 @@ const config = {
         Story,
         Transition, 
         LevelZero,
-    ]
+    ],
 };
 
 export default new Phaser.Game(config);
