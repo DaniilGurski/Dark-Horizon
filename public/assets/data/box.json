@@ -38,6 +38,74 @@
          "y":0
         }, 
         {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Enemy",
+         "objects":[
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"asset",
+                         "type":"string",
+                         "value":"dummy"
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"dummy"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":161.333333333333,
+                 "y":665.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":5,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"asset",
+                         "type":"string",
+                         "value":"dummy"
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"dummy"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":905,
+                 "y":455
+                }],
+         "opacity":1,
+         "properties":[
+                {
+                 "name":"asset",
+                 "type":"string",
+                 "value":"swinger"
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"swinger"
+                }],
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "data":[1, 2, 3, 2, 3, 2, 2, 3, 2, 2, 3, 3, 2, 2, 2, 2, 2, 3, 3, 2, 2, 3, 2, 3, 2, 2, 3, 3, 2, 2, 2, 4,
             19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13,
             19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22,
@@ -72,8 +140,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":3,
- "nextobjectid":1,
+ "nextlayerid":4,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

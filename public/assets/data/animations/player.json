@@ -30,5 +30,16 @@
         "frameRate": 7,
         "delay": 0,
         "yoyo": false
+    },
+
+
+    {
+        "asset": "player",
+        "key": "player-bullet",
+        "prefix": "bullet",
+        "end": 3,
+        "frameRate": 7,
+        "delay": 0,
+        "repeat": -1
     }
 ]

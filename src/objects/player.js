@@ -1,5 +1,6 @@
 
 import DIRECTIONS from "../utils/directions";
+import Bullet from "./bullet";
 
 const playerConfig = {
     gravityY: 400,
@@ -8,7 +9,7 @@ const playerConfig = {
     scale: 1.2,
     rotationAngle: 10, // Rotation angle in degrees
     rotationDuration: 50, // Duration of the rotation effect in milliseconds
-    shootCooldown: 1200,
+    shootCooldown: 800,
     kickbackforce: 500,
 }
 
@@ -51,6 +52,7 @@ export default class Player {
             this.setAnimation("player-jump");
         }
     }
+    
 
     tiltSprite(angle) {
         this.scene.tweens.add({
@@ -60,18 +62,6 @@ export default class Player {
             duration: playerConfig.rotationDuration,
             ease: 'Sine.easeInOut',
         });
-    }
-
-
-    shoot() {
-        this.isShooting = true;
-        this.reloading = true;
-        this.setAnimation("player-shoot");
-        this.startKickback();
-
-        this.scene.time.delayedCall(playerConfig.shootCooldown, () => {
-            this.reloading = false;
-        }, [])
     }
 
 
@@ -97,7 +87,23 @@ export default class Player {
         this.object.setVelocityX(initialKickbackForce);
     }
 
-    
+
+    shoot() {
+        this.isShooting = true;
+        this.reloading = true;
+        this.setAnimation("player-shoot");
+        // this.startKickback();
+        
+        const direction = this.object.flipX ? 'left' : 'right';
+
+        new Bullet(this.scene, this.object.x - 15, this.object.y + 10, direction);
+
+        this.scene.time.delayedCall(playerConfig.shootCooldown, () => {
+            this.reloading = false;
+        });
+    }
+
+
     move(direction, jump) 
     {
         if (direction === DIRECTIONS.RIGHT) {
@@ -121,7 +127,7 @@ export default class Player {
 
         if (this.isShooting) {
             // kickback effect
-            this.object.setVelocityX(this.object.flipX ? playerConfig.kickbackforce : -playerConfig.kickbackforce);
+            // this.object.setVelocityX(this.object.flipX ? playerConfig.kickbackforce : -playerConfig.kickbackforce);
             this.tiltSprite(0)
         }
 
@@ -135,13 +141,14 @@ export default class Player {
         this.state = (this.moving && !this.inAir) ? "walk" : "idle";
     }
 
+
     update(direction, isJumpKeyPressed, shootKeyPressed) 
     {   
         this.moving = direction !== DIRECTIONS.NONE;
         this.inAir = !this.object.body.onFloor();
-
+        
         if (shootKeyPressed && !this.reloading) {
-            this.shoot();
+            this.shoot(); 
         }
 
         this.move(direction, isJumpKeyPressed); 

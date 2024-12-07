@@ -37,7 +37,6 @@ export class Preloader extends Scene
         // Data
         this.load.json("animations", "data/animations/globals.json");
         this.load.json("player-animations", "data/animations/player.json");
-        this.load.json("swinger-animations", "data/animations/swinger.json");
         this.load.tilemapTiledJSON("box", "data/box.json");
         
         // Backgrounds
@@ -50,7 +49,6 @@ export class Preloader extends Scene
             frameHeight: 100,
         })
         this.load.atlas("player", "spritesheets/characters/player.png", "data/atlas/player.json");
-        this.load.atlas("swinger", "spritesheets/characters/player.png", "data/atlas/swinger.json");
 
         // Images
         this.load.image("terrain-tileset", "tilesets/level-tileset.png");
@@ -72,10 +70,10 @@ export class Preloader extends Scene
 
     create ()
     {
+        console.log("Preloader scene loaded");
         this.scene.start('Story');
         this.createAnimations();
         this.createAtlasAnimations("player", "player-animations");
-        this.createAtlasAnimations("swinger", "swinger-animations");
     }
 
     createAnimations()
@@ -109,12 +107,15 @@ export class Preloader extends Scene
                 frames: this.anims.generateFrameNames(atlas, {
                     prefix: animation.prefix,
                     end: animation.end ?? 0,
-                    zeroPad: animation.zeroPad ?? 4,
+                    zeroPad: animation.zeroPad || 4 ,
                 }),
                 frameRate: animation.frameRate,
                 repeat: animation.repeat,
                 yoyo: animation.yoyo,
             })
         })
+
+        console.log(`${requestedAnimations} loaded`);
+        console.log(animations);
     }
 }
