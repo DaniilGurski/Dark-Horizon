@@ -4,13 +4,13 @@ import Bullet from "./bullet";
 
 const playerConfig = {
     gravityY: 400,
-    speedX: 280,
-    speedY: -900,
-    scale: 1.2,
+    speedX: 180,
+    speedY: -600,
+    scale: 0.7,
     rotationAngle: 10, // Rotation angle in degrees
     rotationDuration: 50, // Duration of the rotation effect in milliseconds
     shootCooldown: 800,
-    kickbackforce: 500,
+    kickbackforce: 140,
 }
 
 export default class Player {
@@ -92,11 +92,11 @@ export default class Player {
         this.isShooting = true;
         this.reloading = true;
         this.setAnimation("player-shoot");
-        // this.startKickback();
+        this.startKickback();
         
         const direction = this.object.flipX ? 'left' : 'right';
 
-        new Bullet(this.scene, this.object.x - 15, this.object.y + 10, direction);
+        new Bullet(this.scene, this.object.x, this.object.y, direction);
 
         this.scene.time.delayedCall(playerConfig.shootCooldown, () => {
             this.reloading = false;
@@ -127,8 +127,8 @@ export default class Player {
 
         if (this.isShooting) {
             // kickback effect
-            // this.object.setVelocityX(this.object.flipX ? playerConfig.kickbackforce : -playerConfig.kickbackforce);
-            this.tiltSprite(0)
+            this.object.setVelocityX(this.object.flipX ? playerConfig.kickbackforce : -playerConfig.kickbackforce);
+            this.tiltSprite(this.object.flipX ? playerConfig.rotationAngle : -playerConfig.rotationAngle);
         }
 
 

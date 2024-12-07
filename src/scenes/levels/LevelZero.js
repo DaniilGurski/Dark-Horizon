@@ -50,11 +50,17 @@ export class LevelZero extends Scene
         const map = this.add.tilemap("box");
         const levelTiles = map.addTilesetImage("level-tileset", "terrain-tileset", 32, 32);
         const backgroundLayer = map.createLayer("Background", levelTiles);
+        const playerObject = map.getObjectLayer("Player").objects[0];
         
         this.canvasWidth = this.sys.game.canvas.width;
         this.obstacleLayer = map.createLayer("Obstacles", levelTiles);
         this.controls = new Controls(this);
-        this.player = new Player(this, this.canvasWidth / 2, 100);
+        this.player = new Player(this, playerObject.x, playerObject.y);
+        
+        // add camera that follows the player
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        this.cameras.main.startFollow(this.player.object);
+        this.cameras.main.setZoom(2)
         
         this.addEnemies(map);
         
