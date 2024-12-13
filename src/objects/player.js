@@ -5,8 +5,8 @@ import Bullet from "./bullet";
 const playerConfig = {
     gravityY: 400,
     speedX: 180,
-    speedY: -600,
-    scale: 0.7,
+    speedY: -500,
+    scale: 0.5,
     rotationAngle: 10, // Rotation angle in degrees
     rotationDuration: 50, // Duration of the rotation effect in milliseconds
     shootCooldown: 800,
@@ -19,6 +19,7 @@ export default class Player {
         this.x = x - 24;
         this.y = y;
         this.respawnTimer;
+        this.health = 5; 
         this.moving = false; 
         this.state = "idle"
         this.inAir = true; 
@@ -65,6 +66,7 @@ export default class Player {
     }
 
 
+    // FIXME: remove this method and use the startKickback function from utils instead
     startKickback() {
         const initialKickbackForce = this.object.flipX ? playerConfig.kickbackforce : -playerConfig.kickbackforce;
         const duration = 800; // Duration of the kickback effect in milliseconds
@@ -101,6 +103,14 @@ export default class Player {
         this.scene.time.delayedCall(playerConfig.shootCooldown, () => {
             this.reloading = false;
         });
+    }
+
+
+    takeDamage() {
+        // TODO: add death
+        this.scene.cameras.main.flash(300, 255, 0, 0);
+        this.scene.cameras.main.shake(200, 0.002);
+        this.health -= 1;
     }
 
 
@@ -158,6 +168,3 @@ export default class Player {
         }
     }
 }
-
-// FIXME shoot animation is beign overwritten by idle.
-// FIXME jumping animation is interupting move animation when player is moving.

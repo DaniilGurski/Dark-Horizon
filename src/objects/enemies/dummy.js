@@ -1,5 +1,3 @@
-
-// TODO: abstract the swinger into a class that extends enemy
 export default class Dummy {
     constructor(scene, x, y, obstacleLayer) {
         this.health = 3; 
