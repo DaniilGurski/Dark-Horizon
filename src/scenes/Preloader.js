@@ -37,6 +37,7 @@ export class Preloader extends Scene
         // Data
         this.load.json("animations", "data/animations/globals.json");
         this.load.json("player-animations", "data/animations/player.json");
+        this.load.json("enemies-animations", "data/animations/enemies.json");
         this.load.tilemapTiledJSON("box", "data/box.json");
         
         // Backgrounds
@@ -49,12 +50,14 @@ export class Preloader extends Scene
             frameHeight: 100,
         })
         this.load.atlas("player", "spritesheets/characters/player.png", "data/atlas/player.json");
+        this.load.atlas("enemy-darkness", "spritesheets/characters/enemies/darkness.png", "data/atlas/darkness.json");
 
         // Images
         this.load.image("terrain-tileset", "tilesets/level-tileset.png");
         this.load.image("ship-1", "spritesheets/ship-1.png");
         this.load.image("ship-2", "spritesheets/ship-2.png");
         this.load.image("ship-3", "spritesheets/ship-3.png");
+        this.load.image("dark-particle", "spritesheets/dark-particle.png");
         
         // UI
         this.load.image("cross-icon", "ui/cross.png");
@@ -74,6 +77,7 @@ export class Preloader extends Scene
         this.scene.start('Story');
         this.createAnimations();
         this.createAtlasAnimations("player", "player-animations");
+        this.createAtlasAnimations("enemy-darkness", "enemies-animations");
     }
 
     createAnimations()

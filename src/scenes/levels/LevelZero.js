@@ -1,9 +1,10 @@
+import { getCustomProperty } from "../../utils/helpers";
 import { Scene } from "phaser";
 import Controls from "../../utils/controls";
+import Phaser from "phaser";
 import Player from "../../objects/player";
 import Dummy from "../../objects/enemies/dummy";
-import { getCustomProperty } from "../../utils/helpers";
-import Bullet from "../../objects/bullet";
+import Darkness from "../../objects/enemies/darkness";
 
 
 // TODO: abstract the level into a class that extends general level class
@@ -27,10 +28,13 @@ export class LevelZero extends Scene
             const enemyType = getCustomProperty(enemy, "type");
             const x = Math.floor(enemy.x);
             const y = Math.floor(enemy.y);
-
+            
             if (enemyType === "dummy") {
                 const dummy = new Dummy(this, x, y, this.obstacleLayer);
                 this.enemies.add(dummy.object);
+            } else if (enemyType === "darkness") {
+                const darkness = new Darkness(this, x, y, this.obstacleLayer);
+                this.enemies.add(darkness.object);
             }
         })
     }
@@ -51,9 +55,9 @@ export class LevelZero extends Scene
         const levelTiles = map.addTilesetImage("level-tileset", "terrain-tileset", 32, 32);
         const backgroundLayer = map.createLayer("Background", levelTiles);
         const playerObject = map.getObjectLayer("Player").objects[0];
-        
-        this.canvasWidth = this.sys.game.canvas.width;
+
         this.obstacleLayer = map.createLayer("Obstacles", levelTiles);
+        this.canvasWidth = this.sys.game.canvas.width;
         this.controls = new Controls(this);
         this.player = new Player(this, playerObject.x, playerObject.y);
         
@@ -63,11 +67,11 @@ export class LevelZero extends Scene
         this.cameras.main.setZoom(2)
         
         this.addEnemies(map);
+
         
         this.obstacleLayer.setCollisionByExclusion(-1);
         this.physics.add.collider(this.player.object, this.obstacleLayer);
         this.physics.add.overlap(this.bullets, this.enemies, this.bulletHitsEnemy, null, this);
-        
     }
     
     update ()
@@ -77,5 +81,10 @@ export class LevelZero extends Scene
         const shootKeyPressed = this.controls.getShootKeyPressed();
         
         this.player.update(direction, jumpKeyPressed, shootKeyPressed);
+
+        // call update method on all enemies
+        this.enemies.children.iterate((enemy) => {
+            enemy.owner.update();
+        });
     }
 }
