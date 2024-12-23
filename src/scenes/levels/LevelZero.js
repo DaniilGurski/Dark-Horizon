@@ -14,6 +14,9 @@ export class LevelZero extends Level {
 
     // Add enemies
     this.addEnemies(map);
+
+    // Add pickups
+    this.addPickups(map);
   }
   
   update() {
