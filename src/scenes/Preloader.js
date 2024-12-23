@@ -57,6 +57,8 @@ export class Preloader extends Scene
         this.load.atlas("enemy-darkness", "spritesheets/characters/enemies/darkness.png", "data/atlas/darkness.json");
         
         // Images
+        this.load.image("ammo-pickup", "spritesheets/pickups/ammo.png");
+        this.load.image("health-pickup", "spritesheets/pickups/health.png");
         this.load.image("terrain-tileset", "tilesets/level-tileset.png");
         this.load.image("ship-1", "spritesheets/ship-1.png");
         this.load.image("ship-2", "spritesheets/ship-2.png");
@@ -68,6 +70,7 @@ export class Preloader extends Scene
         this.load.atlas("healthbar", "ui/healthbar.png", "data/atlas/healthbar.json");
         this.load.image("cross-icon", "ui/cross.png");
         this.load.image("next-icon", "ui/next.png");
+        this.load.image("ammo-arrows", "ui/arrows.png");
 
         // Sounds
         this.load.audio("typing", "sounds/sci-fi-typing.mp3");
@@ -75,6 +78,8 @@ export class Preloader extends Scene
         this.load.audio("spaceship-passing-01", "sounds/spaceship-passing01.mp3");
         this.load.audio("spaceship-passing-02", "sounds/spaceship-passing02.mp3");
         this.load.audio("spaceship-passing-03", "sounds/spaceship-passing03.mp3");
+        this.load.audio("health-pickup", "sounds/player/pickups/health.wav");
+        this.load.audio("ammo-pickup", "sounds/player/pickups/ammo.wav");
     }
 
     create ()

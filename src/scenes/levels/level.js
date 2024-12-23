@@ -1,6 +1,8 @@
 // src/scenes/levels/Level.js
 import { Scene } from "phaser";
 import { getCustomProperty } from "../../utils/helpers";
+import { HealthPickup } from "../../objects/pickups/health-pickup";
+import { AmmoPickup } from "../../objects/pickups/ammo-pickup";
 import Controls from "../../utils/controls";
 import Player from "../../objects/player";
 import { PlayerInterface } from "../../interface";
@@ -14,8 +16,10 @@ export class Level extends Scene {
     this.player = null;
     this.bullets = null;
     this.enemies = null;
+    this.pickups = null;
     this.obstacleLayer = null;
   }
+
 
   create() {
     // Initialize groups
@@ -27,6 +31,7 @@ export class Level extends Scene {
     // Set up camera
     this.cameras.main.setZoom(2);
   }
+
 
   addMap(mapKey, tilesetKey, tilesetImageKey) {
     // Load the tilemap and tileset
@@ -59,6 +64,7 @@ export class Level extends Scene {
     return map;
   }
 
+
   addEnemies(map) {
     const enemiesObject = map.getObjectLayer("Enemy");
     this.enemies = this.physics.add.group();
@@ -83,6 +89,37 @@ export class Level extends Scene {
     // Add overlap between bullets and enemies
     this.physics.add.overlap(this.bullets, this.enemies, this.bulletHitsEnemy, null, this);
   }
+
+
+  addPickups(map) {
+    const pickupsObject = map.getObjectLayer("Pickup");
+    this.pickups = this.physics.add.group();
+
+    pickupsObject.objects.forEach((pickup) => {
+      const pickupType = getCustomProperty(pickup, "type");
+      const x = Math.floor(pickup.x);
+      const y = Math.floor(pickup.y);
+
+      let pickupInstance;
+      if (pickupType === "health") {
+        pickupInstance = new HealthPickup(this, x, y);
+      } else if (pickupType === "ammo") {
+        pickupInstance = new AmmoPickup(this, x, y);
+      }
+
+      if (pickupInstance) {
+        this.pickups.add(pickupInstance.object);
+      }
+    });
+
+
+    // disable physics on the pickups
+    this.pickups.children.iterate((pickup) => {
+      pickup.body.allowGravity = false;
+      pickup.body.immovable = true;
+    });
+  }
+
 
   bulletHitsEnemy(bulletSprite, enemySprite) {
     bulletSprite.owner.destroyBullet();

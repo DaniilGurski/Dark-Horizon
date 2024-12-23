@@ -20,6 +20,8 @@ export default class Player {
         this.y = y;
         this.respawnTimer;
         this.health = 6; 
+        this.ammo = 10;
+        this.maxAmmo = 10;
         this.maxHealth = 6;
         this.moving = false; 
         this.state = "idle"
@@ -92,10 +94,15 @@ export default class Player {
 
 
     shoot() {
+        if (this.ammo <= 0) return;
+
+        this.ammo -= 1;
+        this.ammo = Phaser.Math.Clamp(this.ammo, 0, this.maxAmmo);
         this.isShooting = true;
         this.reloading = true;
         this.setAnimation("player-shoot");
         this.startKickback();
+        this.scene.playerInterface.updateAmmoIndicator();
         
         const direction = this.object.flipX ? 'left' : 'right';
 
@@ -125,8 +132,21 @@ export default class Player {
         }
         
         this.health = Phaser.Math.Clamp(this.health, 0, this.maxHealth);
-        console.log(`health left ${this.health}`);
     }
+
+
+    heal() {
+        this.health += 1;
+        this.scene.playerInterface.updateHealthbar()
+    }
+
+
+    collectAmmo() {
+        this.ammo += 2;
+        this.ammo = Phaser.Math.Clamp(this.ammo, 0, this.maxAmmo);
+        this.scene.playerInterface.updateAmmoIndicator()
+    }
+
 
     move(direction, jump) 
     {

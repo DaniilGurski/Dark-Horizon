@@ -89,6 +89,53 @@
         }, 
         {
          "draworder":"topdown",
+         "id":6,
+         "name":"Pickup",
+         "objects":[
+                {
+                 "height":0,
+                 "id":9,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"ammo"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":436,
+                 "y":511
+                }, 
+                {
+                 "height":0,
+                 "id":10,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"health"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":493.75,
+                 "y":510.5
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":3,
          "name":"Enemy",
          "objects":[
@@ -132,8 +179,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":9,
+ "nextlayerid":7,
+ "nextobjectid":11,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
