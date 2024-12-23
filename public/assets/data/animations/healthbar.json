@@ -1,0 +1,8 @@
+[
+    {
+        "asset": "healthbar",
+        "key": "healthbar-idle",
+        "prefix": "healthbar",
+        "end": 5
+    }
+]
