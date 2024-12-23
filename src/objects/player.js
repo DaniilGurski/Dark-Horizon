@@ -9,7 +9,7 @@ const playerConfig = {
     scale: 0.5,
     rotationAngle: 10, // Rotation angle in degrees
     rotationDuration: 50, // Duration of the rotation effect in milliseconds
-    shootCooldown: 800,
+    shootCooldown: 600,
     kickbackforce: 140,
 }
 
