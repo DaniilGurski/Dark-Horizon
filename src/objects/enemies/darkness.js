@@ -9,8 +9,9 @@ export default class Darkness {
     constructor(scene, x, y, obstacleLayer) {
         this.health = 3; 
         this.scene = scene;
-        this.object = scene.physics.add.sprite(x, y, "enemy-darkness").setScale(1);
+        this.object = scene.physics.add.sprite(x, y, "enemy-darkness").setScale(1).setSize(40, 0);
         this.directions = ["left", "right"]
+        this.attackInProgress = false;
         this.currentDirection = this.directions[Math.floor(Math.random() * this.directions.length)];
         this.kickbackTween; 
         this.state = {
@@ -18,7 +19,7 @@ export default class Darkness {
             iChasing: false, 
             isAttacking: false,
             isPatroling: true,
-            isStunned: false,
+            isStunned: false
         }
 
         this.emitter = this.scene.add.particles(this.object.x, this.object.y, 'dark-particle', {
@@ -68,14 +69,14 @@ export default class Darkness {
         const distanceX = Math.abs(dx);
         const distanceY = Math.abs(dy);
 
-        if (distanceX < 25 && (distanceY < 90 || this.scene.player.inAir)) {
+        if (distanceX < 25 && (distanceY < 70 || this.scene.player.inAir)) {
             this.state = {
                 ...this.state,
                 isAttacking: true,
                 isChasing: false,
                 isPatroling: false,
             }
-        } else if (distanceX < 150 && (distanceY < 90 || this.scene.player.inAir)) {
+        } else if (distanceX < 150 && (distanceY < 70 || this.scene.player.inAir)) {
             this.object.flipX = dx > 0;
 
             this.state = {
@@ -146,16 +147,22 @@ export default class Darkness {
 
 
         if (this.state.isAttacking) {
+            if (this.attackInProgress) {
+                return 
+            }
+            this.attackInProgress = true;
             this.object.setVelocityX(0);
             this.object.anims.play("darkness-attack", true);
             
             // if enemy and player overlap
-            this.scene.time.delayedCall(500, () => {
+            this.scene.time.delayedCall(300, () => {
                 if (this.scene.physics.overlap(this.object, this.scene.player.object)) {
                     this.scene.player.object.setVelocityY(-200);
                     this.scene.player.takeDamage();
-                    startKickback(this.scene.player.object, 800, 600, (this.currentDirection === "left"), this.scene.player.kickbackTween);
+                    startKickback(this.scene.player.object, 800, 600, (!this.object.flipX), this.scene.player.kickbackTween);
                 }
+                
+                this.attackInProgress = false;
             });
 
         } else if (this.state.isChasing) {

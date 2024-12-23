@@ -19,7 +19,8 @@ export default class Player {
         this.x = x - 24;
         this.y = y;
         this.respawnTimer;
-        this.health = 5; 
+        this.health = 6; 
+        this.maxHealth = 6;
         this.moving = false; 
         this.state = "idle"
         this.inAir = true; 
@@ -107,12 +108,25 @@ export default class Player {
 
 
     takeDamage() {
-        // TODO: add death
+        this.health -= 1;
         this.scene.cameras.main.flash(300, 255, 0, 0);
         this.scene.cameras.main.shake(200, 0.002);
-        this.health -= 1;
-    }
+        this.scene.playerInterface.updateHealthbar()
 
+        if (this.health <= 0) {
+            // smooth blur effect leading to game over screen
+            this.scene.cameras.main.fadeOut(300); 
+
+            this.scene.time.delayedCall(300, () => {
+                this.scene.changeScene("GameOver");
+            });
+
+            return
+        }
+        
+        this.health = Phaser.Math.Clamp(this.health, 0, this.maxHealth);
+        console.log(`health left ${this.health}`);
+    }
 
     move(direction, jump) 
     {
@@ -132,6 +146,7 @@ export default class Player {
 
         if (jump && !this.inAir) {
             this.object.setVelocityY(playerConfig.speedY);
+            
         }
 
 

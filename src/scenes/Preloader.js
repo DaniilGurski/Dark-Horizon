@@ -26,9 +26,15 @@ export class Preloader extends Scene
 
     preload ()
     {
-        const playerFrameConfig = {
-            frameWidth: 32,
-            frameHeight: 32,
+        // TODO: Move to boot scene ?
+        const healthbarFrameConfig = {
+            frameWidth: 50,
+            frameHeight: 10
+        }
+
+        const planetFrameConfig = {
+            frameWidth: 100,
+            frameHeight: 100,
         }
 
         //  Load the assets for the game - Replace with your own assets
@@ -38,6 +44,7 @@ export class Preloader extends Scene
         this.load.json("animations", "data/animations/globals.json");
         this.load.json("player-animations", "data/animations/player.json");
         this.load.json("enemies-animations", "data/animations/enemies.json");
+        this.load.json("healthbar-frames", "data/animations/healthbar.json");
         this.load.tilemapTiledJSON("box", "data/box.json");
         
         // Backgrounds
@@ -45,13 +52,10 @@ export class Preloader extends Scene
         this.load.image("transition-cutscene-bg", "backgrounds/space.png");
         
         // Spritesheets
-        this.load.spritesheet("planet", "spritesheets/planet.png", {
-            frameWidth: 100,
-            frameHeight: 100,
-        })
+        this.load.spritesheet("planet", "spritesheets/planet.png", planetFrameConfig)
         this.load.atlas("player", "spritesheets/characters/player.png", "data/atlas/player.json");
         this.load.atlas("enemy-darkness", "spritesheets/characters/enemies/darkness.png", "data/atlas/darkness.json");
-
+        
         // Images
         this.load.image("terrain-tileset", "tilesets/level-tileset.png");
         this.load.image("ship-1", "spritesheets/ship-1.png");
@@ -60,6 +64,8 @@ export class Preloader extends Scene
         this.load.image("dark-particle", "spritesheets/dark-particle.png");
         
         // UI
+        // this.load.spritesheet("healthbar", "ui/healthbar.png", healthbarFrameConfig)
+        this.load.atlas("healthbar", "ui/healthbar.png", "data/atlas/healthbar.json");
         this.load.image("cross-icon", "ui/cross.png");
         this.load.image("next-icon", "ui/next.png");
 
@@ -78,6 +84,7 @@ export class Preloader extends Scene
         this.createAnimations();
         this.createAtlasAnimations("player", "player-animations");
         this.createAtlasAnimations("enemy-darkness", "enemies-animations");
+        this.createAtlasAnimations("healthbar", "healthbar-frames");
     }
 
     createAnimations()
@@ -111,7 +118,7 @@ export class Preloader extends Scene
                 frames: this.anims.generateFrameNames(atlas, {
                     prefix: animation.prefix,
                     end: animation.end ?? 0,
-                    zeroPad: animation.zeroPad || 4 ,
+                    zeroPad: animation.zeroPad || 4,
                 }),
                 frameRate: animation.frameRate,
                 repeat: animation.repeat,
