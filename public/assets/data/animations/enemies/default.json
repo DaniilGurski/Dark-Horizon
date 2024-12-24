@@ -1,7 +1,7 @@
 [
     {
-        "asset": "enemy-darkness",
-        "key": "darkness-idle",
+        "asset": "enemy-default",
+        "key": "default-enemy-idle",
         "prefix": "idle",
         "end": 7,
         "frameRate": 7,
@@ -10,8 +10,8 @@
     }, 
 
     {
-        "asset": "enemy-darkness",
-        "key": "darkness-move",
+        "asset": "enemy-default",
+        "key": "default-enemy-move",
         "prefix": "move",
         "end": 7,
         "frameRate": 12,
@@ -20,8 +20,8 @@
 
 
     {
-        "asset": "enemy-darkness",
-        "key": "darkness-attack",
+        "asset": "enemy-default",
+        "key": "default-enemy-attack",
         "prefix": "attack",
         "end": 7,
         "frameRate": 8,
@@ -29,8 +29,8 @@
     },
 
     {
-        "asset": "enemy-darkness",
-        "key": "darkness-hook",
+        "asset": "enemy-default",
+        "key": "default-enemy-hook",
         "prefix": "hook",
         "end": 13,
         "frameRate": 12,
@@ -39,8 +39,8 @@
     },
 
     {
-        "asset": "enemy-darkness",
-        "key": "darkness-hit",
+        "asset": "enemy-default",
+        "key": "default-enemy-hit",
         "prefix": "hit",
         "end": 2,
         "frameRate": 8,
@@ -50,8 +50,8 @@
 
 
     {
-        "asset": "enemy-darkness",
-        "key": "darkness-death",
+        "asset": "enemy-default",
+        "key": "default-enemy-death",
         "prefix": "death",
         "end": 9,
         "frameRate": 8,

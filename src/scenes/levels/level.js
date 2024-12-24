@@ -8,6 +8,7 @@ import Player from "../../objects/player";
 import { PlayerInterface } from "../../interface";
 import Dummy from "../../objects/enemies/dummy";
 import Darkness from "../../objects/enemies/darkness";
+import DarknessEnemy from "../../objects/enemies/darknessEnemy";
 
 export class Level extends Scene {
   constructor(key) {
@@ -70,15 +71,17 @@ export class Level extends Scene {
     this.enemies = this.physics.add.group();
 
     enemiesObject.objects.forEach((enemy) => {
-      const enemyType = getCustomProperty(enemy, "type");
+      const enemyName = getCustomProperty(enemy, "name");
+      const enemyType = getCustomProperty(enemy, "type") || "default";
+
       const x = Math.floor(enemy.x);
       const y = Math.floor(enemy.y);
 
       let enemyInstance;
-      if (enemyType === "dummy") {
+      if (enemyName === "dummy") {
         enemyInstance = new Dummy(this, x, y, this.obstacleLayer);
-      } else if (enemyType === "darkness") {
-        enemyInstance = new Darkness(this, x, y, this.obstacleLayer);
+      } else if (enemyName === "darkness") {
+        enemyInstance = new DarknessEnemy(this, x, y, this.obstacleLayer, enemyType);
       }
 
       if (enemyInstance) {

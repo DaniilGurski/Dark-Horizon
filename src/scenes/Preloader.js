@@ -43,7 +43,10 @@ export class Preloader extends Scene
         // Data
         this.load.json("animations", "data/animations/globals.json");
         this.load.json("player-animations", "data/animations/player.json");
-        this.load.json("enemies-animations", "data/animations/enemies.json");
+        this.load.json("enemy-default-animations", "data/animations/enemies/default.json");
+        this.load.json("enemy-attacker-animations", "data/animations/enemies/attacker.json");
+        this.load.json("enemy-fast-animations", "data/animations/enemies/fast.json");
+        this.load.json("enemy-tank-animations", "data/animations/enemies/tank.json");
         this.load.json("healthbar-frames", "data/animations/healthbar.json");
         this.load.tilemapTiledJSON("box", "data/box.json");
         
@@ -54,7 +57,10 @@ export class Preloader extends Scene
         // Spritesheets
         this.load.spritesheet("planet", "spritesheets/planet.png", planetFrameConfig)
         this.load.atlas("player", "spritesheets/characters/player.png", "data/atlas/player.json");
-        this.load.atlas("enemy-darkness", "spritesheets/characters/enemies/darkness.png", "data/atlas/darkness.json");
+        this.load.atlas("enemy-default", "spritesheets/characters/enemies/darkness.png", "data/atlas/darkness.json");
+        this.load.atlas("enemy-attacker", "spritesheets/characters/enemies/red-darkness.png", "data/atlas/darkness.json");
+        this.load.atlas("enemy-fast", "spritesheets/characters/enemies/blue-darkness.png", "data/atlas/darkness.json");
+        this.load.atlas("enemy-tank", "spritesheets/characters/enemies/gray-darkness.png", "data/atlas/darkness.json");
         
         // Images
         this.load.image("ammo-pickup", "spritesheets/pickups/ammo.png");
@@ -88,7 +94,10 @@ export class Preloader extends Scene
         this.scene.start('Story');
         this.createAnimations();
         this.createAtlasAnimations("player", "player-animations");
-        this.createAtlasAnimations("enemy-darkness", "enemies-animations");
+        this.createAtlasAnimations("enemy-default", "enemy-default-animations");
+        this.createAtlasAnimations("enemy-attacker", "enemy-attacker-animations");
+        this.createAtlasAnimations("enemy-fast", "enemy-fast-animations");
+        this.createAtlasAnimations("enemy-tank", "enemy-tank-animations");
         this.createAtlasAnimations("healthbar", "healthbar-frames");
     }
 

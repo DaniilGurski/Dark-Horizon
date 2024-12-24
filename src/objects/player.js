@@ -114,8 +114,8 @@ export default class Player {
     }
 
 
-    takeDamage() {
-        this.health -= 1;
+    takeDamage(amount) {
+        this.health -= amount;
         this.scene.cameras.main.flash(300, 255, 0, 0);
         this.scene.cameras.main.shake(200, 0.002);
         this.scene.playerInterface.updateHealthbar()
