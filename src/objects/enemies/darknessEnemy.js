@@ -195,7 +195,6 @@ export default class DarknessEnemy {
             
             // if enemy and player overlap
             this.scene.time.delayedCall(300, () => {
-                console.log("enemy attacking");
                 if (this.scene.physics.overlap(this.object, this.scene.player.object)) {
                     this.scene.player.object.setVelocityY(-200);
                     this.scene.player.takeDamage(this.config.damage);
