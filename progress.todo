@@ -1,11 +1,7 @@
 # Game Development Progress 
 
-## Intro 
-- [ X ] Make intro scene
-    - [ X ] Add space background.
-    - [ X ] Split the intro text into a typed line of text in the middle of the screen.
-    - [ X ] Add the ability to change to the next line of text by pressing the right arrow.
-    - [ X ] End the scene and move to the next one (flight cutscene) if x is pressed or the entire intro has been read.
-    - [ X ] Add tooltips for action keys
-
-## Level 1
+## Traps
+- [ ] Spikes
+- [ ] Sawblade
+- [ ] Laser
+- [ ] Turret (?)
