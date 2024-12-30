@@ -1,18 +1,27 @@
-export function startKickback(object, duration, force, kickBackCondition, kickbackTween, onComplete) {
-    const initialKickbackForce = kickBackCondition? force : -force;
+export function startKickback(object, duration, forceX, forceY, kickBackCondition = null, kickbackTween, onComplete) {
+  let initialKickbackForce;
 
-    // stop any previous kickback tweens
-    if (kickbackTween) {
-        kickbackTween.stop();
-    }
+  if (kickBackCondition !== null) {
+    initialKickbackForce = kickBackCondition ? forceX : -forceX;
+  } else {
+    initialKickbackForce = forceX * (object.flipX ? -1 : 1);
+  }
 
-    kickbackTween = object.scene.tweens.add({
-        targets: object.body.velocity,
-        x: 0,
-        ease: 'Power1',
-        duration: duration,
-        onComplete: () => { onComplete && onComplete() }
-    });
+  // stop any previous kickback tweens
+  if (kickbackTween) {
+    kickbackTween.stop();
+  }
 
-    object.setVelocityX(initialKickbackForce);
+  object.setVelocityX(initialKickbackForce);
+  object.setVelocityY(forceY ?? -300);
+
+  kickbackTween = object.scene.tweens.add({
+    targets: object.body.velocity,
+    x: 0,
+    ease: "Power1",
+    duration: duration,
+    onComplete: () => {
+      onComplete && onComplete();
+    },
+  });
 }

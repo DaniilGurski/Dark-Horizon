@@ -1,8 +1,8 @@
-import { Level } from './level';
+import { Level } from "./level";
 
 export class LevelZero extends Level {
   constructor() {
-    super('LevelZero');
+    super("LevelZero");
   }
 
   create() {
@@ -10,15 +10,18 @@ export class LevelZero extends Level {
     super.create();
 
     // Add the map specific to LevelZero
-    const map = this.addMap('box', 'level-tileset', 'terrain-tileset');
+    const map = this.addMap("box", "level-tileset", "terrain-tileset");
 
     // Add enemies
-    this.addEnemies(map);
+    // this.addEnemies(map);
 
     // Add pickups
     this.addPickups(map);
+
+    // Add traps and behavior
+    this.applyTrapData();
   }
-  
+
   update() {
     // Call the parent class's update method
     super.update();
