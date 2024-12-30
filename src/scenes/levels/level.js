@@ -7,8 +7,10 @@ import Controls from "../../utils/controls";
 import Player from "../../objects/player";
 import { PlayerInterface } from "../../interface";
 import Dummy from "../../objects/enemies/dummy";
-import Darkness from "../../objects/enemies/darkness";
 import DarknessEnemy from "../../objects/enemies/darknessEnemy";
+import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
+import { startKickback } from "../../utils/effects";
+import { playerConfig } from "../../utils/config";
 
 export class Level extends Scene {
   constructor(key) {
@@ -19,8 +21,15 @@ export class Level extends Scene {
     this.enemies = null;
     this.pickups = null;
     this.obstacleLayer = null;
+    this.trapsDataLayer = null;
+    this.lastTurretShotTime = 0;
+    this.turretTraps = [];
   }
 
+  preload() {
+    //  Plugins
+    this.load.scenePlugin("animatedTiles", AnimatedTiles, "animatedTiles", "animatedTiles");
+  }
 
   create() {
     // Initialize groups
@@ -33,15 +42,23 @@ export class Level extends Scene {
     this.cameras.main.setZoom(2);
   }
 
-
-  addMap(mapKey, tilesetKey, tilesetImageKey) {
+  addMap(mapKey, tilesetKey = "level-tileset", tilesetImageKey = "terrain-tileset") {
     // Load the tilemap and tileset
     const map = this.add.tilemap(mapKey);
     const levelTiles = map.addTilesetImage(tilesetKey, tilesetImageKey, 32, 32);
+    const spikeTileset = map.addTilesetImage("laser_spikes_idle", "spike-tileset", 32, 32);
+    const laserTileset = map.addTilesetImage("laser_activate", "laser-tileset", 32, 32);
+    const sawbladeTileset = map.addTilesetImage("saw_idle", "sawblade-tileset", 32, 32);
+
+    // NOTE: Turret is a bit unstable.
+    const turretTileset = map.addTilesetImage("electric_turret", "turret-tileset", 64, 32);
+    const trapDataTiles = map.addTilesetImage("trap_data", "trap-data-tileset", 32, 32);
 
     // Create layers
     map.createLayer("Background", levelTiles);
     this.obstacleLayer = map.createLayer("Obstacles", levelTiles);
+    this.trapsLayer = map.createLayer("Traps", [spikeTileset, sawbladeTileset, laserTileset]);
+    this.trapsDataLayer = map.createLayer("TrapsData", trapDataTiles).setVisible(false);
 
     // Set collision
     this.obstacleLayer.setCollisionByExclusion(-1);
@@ -62,9 +79,12 @@ export class Level extends Scene {
     // Add collision between player and obstacles
     this.physics.add.collider(this.player.object, this.obstacleLayer);
 
+    // Animate tiles with plugin
+    this.sys.animatedTiles.init(map);
+
+    // Add overlap between player and spikes
     return map;
   }
-
 
   addEnemies(map) {
     const enemiesObject = map.getObjectLayer("Enemy");
@@ -93,7 +113,6 @@ export class Level extends Scene {
     this.physics.add.overlap(this.bullets, this.enemies, this.bulletHitsEnemy, null, this);
   }
 
-
   addPickups(map) {
     const pickupsObject = map.getObjectLayer("Pickup");
     this.pickups = this.physics.add.group();
@@ -115,7 +134,6 @@ export class Level extends Scene {
       }
     });
 
-
     // disable physics on the pickups
     this.pickups.children.iterate((pickup) => {
       pickup.body.allowGravity = false;
@@ -123,27 +141,79 @@ export class Level extends Scene {
     });
   }
 
+  applyTrapData() {
+    this.trapsDataLayer.forEachTile((tile) => {
+      if (tile.index === -1) return;
+      const { type, damage } = tile.properties;
+
+      const trap = this.physics.add
+        .sprite(tile.pixelX + tile.width / 2, tile.pixelY + tile.height / 2, null)
+        .setSize(tile.width, tile.height)
+        .setVisible(false)
+        .setImmovable(true);
+      trap.body.allowGravity = false;
+
+      if (type === "turret") {
+        // Store turret trap in array
+        trap.damage = damage;
+        this.turretTraps.push(trap);
+      } else {
+        // Normal trap logic
+        this.physics.add.overlap(this.player.object, trap, () => {
+          if (!trap.isOnCooldown) {
+            this.player.disableMovement();
+            this.player.takeDamage(damage);
+            startKickback(this.player.object, 500, 200, -250, this.player.object.flipX, this.player.kickbackTween);
+            trap.isOnCooldown = true;
+            this.time.delayedCall(1000, () => (trap.isOnCooldown = false));
+          }
+        });
+      }
+    });
+
+    // Create one time event to handle all turrets
+    // this.time.addEvent({
+    //   delay: 2750,
+    //   loop: true,
+    //   callback: () => {
+    //     this.turretTraps.forEach((turret) => {
+    //       const tempOverlap = this.physics.add.overlap(this.player.object, turret, () => {
+    //         this.player.disableMovement();
+    //         this.player.takeDamage(turret.damage);
+    //         startKickback(this.player.object, 500, 200, -250, this.player.object.flipX, this.player.kickbackTween);
+    //       });
+
+    //       // Remove overlap after ~10ms
+    //       this.time.delayedCall(10, () => {
+    //         turret.isActive = false;
+    //         tempOverlap.destroy();
+    //       });
+    //     });
+    //   },
+    // });
+  }
 
   bulletHitsEnemy(bulletSprite, enemySprite) {
     bulletSprite.owner.destroyBullet();
     enemySprite.owner.decreaseHealth();
   }
 
-
   changeScene(sceneKey) {
     this.scene.start(sceneKey);
   }
-  
-  update() {
+
+  update(delta) {
     const direction = this.controls.getPressedDirectionKey();
     const jumpKeyPressed = this.controls.getJumpKeyPressed();
     const shootKeyPressed = this.controls.getShootKeyPressed();
 
     this.player.update(direction, jumpKeyPressed, shootKeyPressed);
-
     // Update all enemies
-    this.enemies.children.iterate((enemy) => {
-      enemy.owner.update();
-    });
+    // this.enemies.children.iterate((enemy) => {
+    //   enemy.owner.update();
+    // });
   }
 }
+
+// TODO: add trap cooldown
+// TODO: add kickback effect on player when hitting a trap
