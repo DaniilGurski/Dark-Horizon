@@ -49,9 +49,6 @@ export class Level extends Scene {
     const spikeTileset = map.addTilesetImage("laser_spikes_idle", "spike-tileset", 32, 32);
     const laserTileset = map.addTilesetImage("laser_activate", "laser-tileset", 32, 32);
     const sawbladeTileset = map.addTilesetImage("saw_idle", "sawblade-tileset", 32, 32);
-
-    // NOTE: Turret is a bit unstable.
-    const turretTileset = map.addTilesetImage("electric_turret", "turret-tileset", 64, 32);
     const trapDataTiles = map.addTilesetImage("trap_data", "trap-data-tileset", 32, 32);
 
     // Create layers
@@ -146,19 +143,15 @@ export class Level extends Scene {
       if (tile.index === -1) return;
       const { type, damage } = tile.properties;
 
-      const trap = this.physics.add
-        .sprite(tile.pixelX + tile.width / 2, tile.pixelY + tile.height / 2, null)
-        .setSize(tile.width, tile.height)
-        .setVisible(false)
-        .setImmovable(true);
-      trap.body.allowGravity = false;
+      // Standard tile trap
+      if (type !== "turret") {
+        const trap = this.physics.add
+          .sprite(tile.pixelX + tile.width / 2, tile.pixelY + tile.height / 2, null)
+          .setSize(tile.width, tile.height)
+          .setVisible(false)
+          .setImmovable(true);
+        trap.body.allowGravity = false;
 
-      if (type === "turret") {
-        // Store turret trap in array
-        trap.damage = damage;
-        this.turretTraps.push(trap);
-      } else {
-        // Normal trap logic
         this.physics.add.overlap(this.player.object, trap, () => {
           if (!trap.isOnCooldown) {
             this.player.disableMovement();
@@ -168,29 +161,20 @@ export class Level extends Scene {
             this.time.delayedCall(1000, () => (trap.isOnCooldown = false));
           }
         });
+      } else {
+        // Turret trap
+        const turret = this.physics.add
+          .sprite(tile.pixelX + tile.width / 2, tile.pixelY + tile.height / 2, "turret")
+          .setSize(64, 32)
+          .setImmovable(true);
+        turret.body.allowGravity = false;
+        turret.isOnCooldown = false;
+
+        // play animation
+        turret.anims.play("turret-shoot");
+        this.turretTraps.push(turret);
       }
     });
-
-    // Create one time event to handle all turrets
-    // this.time.addEvent({
-    //   delay: 2750,
-    //   loop: true,
-    //   callback: () => {
-    //     this.turretTraps.forEach((turret) => {
-    //       const tempOverlap = this.physics.add.overlap(this.player.object, turret, () => {
-    //         this.player.disableMovement();
-    //         this.player.takeDamage(turret.damage);
-    //         startKickback(this.player.object, 500, 200, -250, this.player.object.flipX, this.player.kickbackTween);
-    //       });
-
-    //       // Remove overlap after ~10ms
-    //       this.time.delayedCall(10, () => {
-    //         turret.isActive = false;
-    //         tempOverlap.destroy();
-    //       });
-    //     });
-    //   },
-    // });
   }
 
   bulletHitsEnemy(bulletSprite, enemySprite) {
@@ -202,16 +186,31 @@ export class Level extends Scene {
     this.scene.start(sceneKey);
   }
 
-  update(delta) {
+  update() {
     const direction = this.controls.getPressedDirectionKey();
     const jumpKeyPressed = this.controls.getJumpKeyPressed();
     const shootKeyPressed = this.controls.getShootKeyPressed();
 
     this.player.update(direction, jumpKeyPressed, shootKeyPressed);
+
     // Update all enemies
     // this.enemies.children.iterate((enemy) => {
     //   enemy.owner.update();
     // });
+
+    // Update all turret traps (damage player if animation is on above frame 12)
+    this.turretTraps.forEach((turret) => {
+      // add overlap between player and turret
+      this.physics.add.overlap(this.player.object, turret, () => {
+        if (!turret.isOnCooldown && turret.anims.currentFrame.index >= 19) {
+          this.player.disableMovement();
+          this.player.takeDamage(3);
+          startKickback(this.player.object, 500, 300, -250, this.player.object.flipX, this.player.kickbackTween);
+          turret.isOnCooldown = true;
+          this.time.delayedCall(1000, () => (turret.isOnCooldown = false)); // Cooldown duration
+        }
+      });
+    });
   }
 }
 
