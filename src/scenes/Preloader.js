@@ -38,6 +38,16 @@ export class Preloader extends Scene {
       frameHeight: 32,
     };
 
+    const controlPanelFrameConfig = {
+      frameWidth: 32,
+      frameHeight: 32,
+    };
+
+    const barrierFrameConfig = {
+      frameWidth: 32,
+      frameHeight: 64,
+    };
+
     //  Load the assets for the game - Replace with your own assets
     this.load.setPath("assets");
 
@@ -58,13 +68,24 @@ export class Preloader extends Scene {
 
     // Spritesheets
     this.load.spritesheet("planet", "spritesheets/planet.png", planetFrameConfig);
-    this.load.spritesheet("turret", "tilesets/traps/electric_turret.png", turretFrameConfig);
+    this.load.spritesheet("turret", "spritesheets/traps/electric_turret.png", turretFrameConfig);
+    this.load.spritesheet(
+      "control-panel-active",
+      "spritesheets/barriers/control_panel_idle.png",
+      controlPanelFrameConfig
+    );
+    this.load.spritesheet(
+      "control-panel-inactive",
+      "spritesheets/barriers/control_panel_deactivate.png",
+      controlPanelFrameConfig
+    );
+    this.load.spritesheet("barrier-active", "spritesheets/barriers/barrier_idle.png", barrierFrameConfig);
+    this.load.spritesheet("barrier-inactive", "spritesheets/barriers/barrier_deactivate.png", barrierFrameConfig);
     this.load.atlas("player", "spritesheets/characters/player.png", "data/atlas/player.json");
     this.load.atlas("enemy-default", "spritesheets/characters/enemies/darkness.png", "data/atlas/darkness.json");
     this.load.atlas("enemy-attacker", "spritesheets/characters/enemies/red-darkness.png", "data/atlas/darkness.json");
     this.load.atlas("enemy-fast", "spritesheets/characters/enemies/blue-darkness.png", "data/atlas/darkness.json");
     this.load.atlas("enemy-tank", "spritesheets/characters/enemies/gray-darkness.png", "data/atlas/darkness.json");
-    // this.load.atlas("trap-turret", "tilesets/traps/electric_turret.png", "data/atlas/turret.json");
 
     // Images
     this.load.image("ammo-pickup", "spritesheets/pickups/ammo.png");
@@ -74,6 +95,7 @@ export class Preloader extends Scene {
     this.load.image("laser-tileset", "tilesets/traps/laser_activate.png");
     this.load.image("sawblade-tileset", "tilesets/traps/saw_idle.png");
     this.load.image("trap-data-tileset", "tilesets/traps/trap_data.png");
+    this.load.image("barrier-data-tileset", "tilesets/barrier_data.png");
     this.load.image("ship-1", "spritesheets/ship-1.png");
     this.load.image("ship-2", "spritesheets/ship-2.png");
     this.load.image("ship-3", "spritesheets/ship-3.png");
@@ -106,7 +128,6 @@ export class Preloader extends Scene {
     this.createAtlasAnimations("enemy-fast", "enemy-fast-animations");
     this.createAtlasAnimations("enemy-tank", "enemy-tank-animations");
     this.createAtlasAnimations("healthbar", "healthbar-frames");
-    // this.createAtlasAnimations("trap-turret", "turret-frames");
   }
 
   createAnimations() {

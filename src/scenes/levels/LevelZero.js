@@ -18,6 +18,9 @@ export class LevelZero extends Level {
     // Add pickups
     this.addPickups(map);
 
+    // Add barriers and control panels
+    this.addBarriersAndControlPanels(map);
+
     // Add traps and behavior
     this.applyTrapData();
   }

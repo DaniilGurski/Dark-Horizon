@@ -1,9 +1,12 @@
 // src/scenes/levels/Level.js
 import { Scene } from "phaser";
+import Phaser from "phaser";
 import { getCustomProperty } from "../../utils/helpers";
 import { HealthPickup } from "../../objects/pickups/health-pickup";
 import { AmmoPickup } from "../../objects/pickups/ammo-pickup";
 import Controls from "../../utils/controls";
+import Barrier from "../../objects/barriers/barrier";
+import ControlPanel from "../../objects/barriers/control-panel";
 import Player from "../../objects/player";
 import { PlayerInterface } from "../../interface";
 import Dummy from "../../objects/enemies/dummy";
@@ -15,13 +18,17 @@ import { playerConfig } from "../../utils/config";
 export class Level extends Scene {
   constructor(key) {
     super(key);
-    this.controls = null;
-    this.player = null;
-    this.bullets = null;
-    this.enemies = null;
-    this.pickups = null;
-    this.obstacleLayer = null;
-    this.trapsDataLayer = null;
+    this.controls;
+    this.player;
+    this.bullets;
+    this.enemies;
+    this.pickups;
+    this.barriers;
+    this.controls;
+    this.controlPanels;
+    this.currentCurrentPanel;
+    this.obstacleLayer;
+    this.trapsDataLayer;
     this.lastTurretShotTime = 0;
     this.turretTraps = [];
   }
@@ -32,6 +39,8 @@ export class Level extends Scene {
   }
 
   create() {
+    this.controls = new Controls(this);
+
     // Initialize groups
     this.bullets = this.add.group();
 
@@ -138,6 +147,45 @@ export class Level extends Scene {
     });
   }
 
+  addBarriersAndControlPanels(map) {
+    const barriersObject = map.getObjectLayer("Barrier");
+    const controlPanelsObject = map.getObjectLayer("ControlPanel");
+    this.barriers = this.physics.add.group();
+    this.controlPanels = this.physics.add.group();
+
+    barriersObject.objects.forEach((barrier) => {
+      const barrierId = getCustomProperty(barrier, "barrierId");
+      const x = Math.floor(barrier.x) + 16;
+      const y = Math.floor(barrier.y);
+
+      let barrierInstance;
+      barrierInstance = new Barrier(this, x, y, barrierId);
+
+      if (barrierInstance) {
+        barrierInstance.object.anims.play("barrier-idle");
+
+        this.barriers.add(barrierInstance.object);
+      }
+    });
+
+    controlPanelsObject.objects.forEach((controlPanel) => {
+      const barrierId = getCustomProperty(controlPanel, "barrierId");
+      const x = Math.floor(controlPanel.x) + 16;
+      const y = Math.floor(controlPanel.y) + 16;
+
+      const controlPanelInstance = new ControlPanel(this, x, y, barrierId);
+      controlPanelInstance.object.anims.play("control-panel-idle");
+
+      this.controlPanels.add(controlPanelInstance.object);
+    });
+
+    this.physics.add.overlap(this.player.object, this.controlPanels, (player, panel) => {
+      console.log("Player is overlapping a control panel");
+      // Store the overlapping panel so we can handle input in 'update'
+      this.currentPanel = panel;
+    });
+  }
+
   applyTrapData() {
     this.trapsDataLayer.forEachTile((tile) => {
       if (tile.index === -1) return;
@@ -190,6 +238,7 @@ export class Level extends Scene {
     const direction = this.controls.getPressedDirectionKey();
     const jumpKeyPressed = this.controls.getJumpKeyPressed();
     const shootKeyPressed = this.controls.getShootKeyPressed();
+    const spaceKeyPressed = this.controls.getSpaceKeyPressed();
 
     this.player.update(direction, jumpKeyPressed, shootKeyPressed);
 
@@ -211,6 +260,29 @@ export class Level extends Scene {
         }
       });
     });
+
+    // If player presses SPACE and is overlapping a panel:
+    if (this.currentPanel && spaceKeyPressed) {
+      const panelBarrierId = this.currentPanel.barrierId;
+
+      // Find the barrier with the matching ID
+      const matchingBarrier = this.barriers
+        .getChildren()
+        .find((barrierSprite) => barrierSprite.barrierId === panelBarrierId);
+
+      // Destroy the barrier if found
+      if (matchingBarrier) {
+        matchingBarrier.owner.deactivate();
+      }
+
+      // disabe active animation
+      this.currentPanel.anims.stop();
+      this.currentPanel.setTexture("control-panel-inactive");
+
+      // Optionally remove reference so we don't trigger again unless we overlap again
+      this.controlPanels.remove(this.currentPanel);
+      this.currentPanel = null;
+    }
   }
 }
 
