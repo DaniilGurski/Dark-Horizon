@@ -24,6 +24,7 @@ export default class Player {
     this.object = scene.physics.add.sprite(this.x, this.y, "player").setSize(36, 45).setOffset(0.5, 0);
     this.object.body.setGravityY(playerConfig.gravityY);
     this.object.setScale(playerConfig.scale);
+    this.object.setDepth(2);
     this.object.on("animationcomplete", () => {
       this.isShooting = false;
     });
