@@ -10,10 +10,10 @@ export class LevelZero extends Level {
     super.create();
 
     // Add the map specific to LevelZero
-    const map = this.addMap("box", "level-tileset", "terrain-tileset");
+    const map = this.addMap("main-level", "level-tileset", "terrain-tileset");
 
     // Add enemies
-    // this.addEnemies(map);
+    this.addEnemies(map);
 
     // Add pickups
     this.addPickups(map);

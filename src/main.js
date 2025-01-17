@@ -29,9 +29,3 @@ const config = {
 };
 
 export default new Phaser.Game(config);
-
-// TODO: Fix issue with unproper collision with angled tiles and objects
-// TODO: Add basic UI for the player, like health, ammo
-// TODO: Player death
-// TODO: Begin programming traps
-// TODO: Create general enemy class and level class.
