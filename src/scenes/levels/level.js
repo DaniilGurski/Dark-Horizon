@@ -28,13 +28,15 @@ export class Level extends Scene {
     this.controlPanels;
     this.currentCurrentPanel;
     this.obstacleLayer;
+    this.enemyBoundaries;
     this.trapsDataLayer;
+    this.decorLayer;
     this.lastTurretShotTime = 0;
     this.turretTraps = [];
   }
 
   preload() {
-    //  Plugins
+    // Plugins
     this.load.scenePlugin("animatedTiles", AnimatedTiles, "animatedTiles", "animatedTiles");
   }
 
@@ -55,6 +57,7 @@ export class Level extends Scene {
     // Load the tilemap and tileset
     const map = this.add.tilemap(mapKey);
     const levelTiles = map.addTilesetImage(tilesetKey, tilesetImageKey, 32, 32);
+    const decorTiles = map.addTilesetImage("decor", "decor-tileset", 32, 32);
     const spikeTileset = map.addTilesetImage("laser_spikes_idle", "spike-tileset", 32, 32);
     const laserTileset = map.addTilesetImage("laser_activate", "laser-tileset", 32, 32);
     const sawbladeTileset = map.addTilesetImage("saw_idle", "sawblade-tileset", 32, 32);
@@ -65,9 +68,12 @@ export class Level extends Scene {
     this.obstacleLayer = map.createLayer("Obstacles", levelTiles);
     this.trapsLayer = map.createLayer("Traps", [spikeTileset, sawbladeTileset, laserTileset]);
     this.trapsDataLayer = map.createLayer("TrapsData", trapDataTiles).setVisible(false);
+    this.enemyBoundaries = map.createLayer("EnemyBoundaries", levelTiles).setVisible(false);
+    this.decorLayer = map.createLayer("Decor", decorTiles);
 
     // Set collision
     this.obstacleLayer.setCollisionByExclusion(-1);
+    this.enemyBoundaries.setCollisionByExclusion(-1);
 
     // Get player spawn point
     const playerObject = map.getObjectLayer("Player").objects[0];
@@ -108,6 +114,7 @@ export class Level extends Scene {
         enemyInstance = new Dummy(this, x, y, this.obstacleLayer);
       } else if (enemyName === "darkness") {
         enemyInstance = new DarknessEnemy(this, x, y, this.obstacleLayer, enemyType);
+        this.physics.add.collider(enemyInstance.object, this.enemyBoundaries);
       }
 
       if (enemyInstance) {
@@ -243,9 +250,9 @@ export class Level extends Scene {
     this.player.update(direction, jumpKeyPressed, shootKeyPressed);
 
     // Update all enemies
-    // this.enemies.children.iterate((enemy) => {
-    //   enemy.owner.update();
-    // });
+    this.enemies.children.iterate((enemy) => {
+      enemy.owner.update();
+    });
 
     // Update all turret traps (damage player if animation is on above frame 12)
     this.turretTraps.forEach((turret) => {
@@ -276,15 +283,23 @@ export class Level extends Scene {
       }
 
       // disabe active animation
-      this.currentPanel.anims.stop();
+      this.currentPanel.anims?.stop();
       this.currentPanel.setTexture("control-panel-inactive");
 
       // Optionally remove reference so we don't trigger again unless we overlap again
       this.controlPanels.remove(this.currentPanel);
       this.currentPanel = null;
     }
+
+    // If Player is below the world (or off-screen), kill them.
+    if (this.player.object.y > this.physics.world.bounds.height) {
+      this.changeScene("GameOver");
+    }
   }
 }
 
-// TODO: add trap cooldown
-// TODO: add kickback effect on player when hitting a trap
+// TODO: kill bullet when it leaves the screen view
+// TODO: change enemy direction when it bumbs into a boundary (does not work for none standard enemies)
+// TODO: add different death particles for each enemy (?)
+// TODO: add small coin like pickups for fun
+// TODO: add small ending scene

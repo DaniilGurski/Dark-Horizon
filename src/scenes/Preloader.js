@@ -61,6 +61,7 @@ export class Preloader extends Scene {
     this.load.json("healthbar-frames", "data/animations/healthbar.json");
     this.load.json("turret-frames", "data/animations/traps/turret.json");
     this.load.tilemapTiledJSON("box", "data/box.json");
+    this.load.tilemapTiledJSON("main-level", "data/main-level.json");
 
     // Backgrounds
     this.load.image("story-bg", "backgrounds/darkness.png");
@@ -91,6 +92,7 @@ export class Preloader extends Scene {
     this.load.image("ammo-pickup", "spritesheets/pickups/ammo.png");
     this.load.image("health-pickup", "spritesheets/pickups/health.png");
     this.load.image("terrain-tileset", "tilesets/level-tileset.png");
+    this.load.image("decor-tileset", "tilesets/decor.png");
     this.load.image("spike-tileset", "tilesets/traps/laser_spikes_idle.png");
     this.load.image("laser-tileset", "tilesets/traps/laser_activate.png");
     this.load.image("sawblade-tileset", "tilesets/traps/saw_idle.png");

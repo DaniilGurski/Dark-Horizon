@@ -1,6 +1,6 @@
 export const playerConfig = {
   gravityY: 400,
-  speedX: 180,
+  speedX: 160,
   speedY: -500,
   scale: 0.5,
   rotationAngle: 10, // Rotation angle in degrees
