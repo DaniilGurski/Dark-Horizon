@@ -33,6 +33,9 @@ export default class Bullet {
         this.destroyBullet();
       }
     });
+
+    // Destroy the bullet after a few seconds
+    this.scene.time.delayedCall(300, this.destroyBullet, [], this); // Adjust the delay as needed
   }
 
   destroyBullet() {

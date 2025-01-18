@@ -1,4 +1,5 @@
 import { Scene } from "phaser";
+import { createTextTip } from "../utils/helpers";
 
 export class Transition extends Scene {
   constructor() {
@@ -41,7 +42,7 @@ export class Transition extends Scene {
     this.cameras.main.fadeIn(1000, 0, 0, 0);
     this.cameras.main.zoomTo(1.2, 20000);
     this.add.image(0, 0, "transition-cutscene-bg").setOrigin(0, 0);
-    this.sound.add("space-ambient", { loop: true }).play();
+    // this.sound.add("space-ambient", { loop: true }).play();
 
     this.planet = this.physics.add.sprite(width / 2, height / 2, "planet").setScale(3.5);
     this.planet.anims.play("planet-spin");

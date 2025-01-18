@@ -8,6 +8,7 @@ export default class Player {
     this.scene = scene;
     this.x = x - 24;
     this.y = y;
+    this.score = 0;
     this.respawnTimer;
     this.health = 6;
     this.ammo = 10;
@@ -19,7 +20,9 @@ export default class Player {
     this.inAir = true;
     this.isShooting = false;
     this.reloading = false;
+    this.disabled = false;
     this.kickbackTween;
+    this.footStepSound;
 
     this.object = scene.physics.add.sprite(this.x, this.y, "player").setSize(36, 45).setOffset(0.5, 0);
     this.object.body.setGravityY(playerConfig.gravityY);
@@ -28,6 +31,55 @@ export default class Player {
     this.object.on("animationcomplete", () => {
       this.isShooting = false;
     });
+
+    // Footstep sounds
+    this.footstepSounds = [
+      this.scene.sound.add("step1"),
+      this.scene.sound.add("step2"),
+      this.scene.sound.add("step3"),
+      this.scene.sound.add("step4"),
+    ];
+
+    this.damageSounds = [
+      this.scene.sound.add("damage1"),
+      this.scene.sound.add("damage2"),
+      this.scene.sound.add("damage3"),
+    ];
+    this.trapDamageSounds = [this.scene.sound.add("slice1"), this.scene.sound.add("slice2")];
+    this.footstepSoundTimer = null;
+    this.jumpSound = this.scene.sound.add("jump");
+    this.jumpSound.volume = 0.4;
+    this.scene.sound.add("spawn").play();
+  }
+
+  playRandomDamageSound(isTrap = false) {
+    const randomSound = Phaser.Utils.Array.GetRandom(isTrap ? this.trapDamageSounds : this.damageSounds);
+    randomSound.play();
+  }
+
+  playRandomFootstepSound() {
+    if (this.footstepSoundTimer) {
+      return;
+    }
+
+    const randomSound = Phaser.Utils.Array.GetRandom(this.footstepSounds);
+    randomSound.volume = 0.5;
+    randomSound.play();
+
+    // Add a small delay before the next footstep sound is played
+    this.footstepSoundTimer = this.scene.time.addEvent({
+      delay: 300, // Adjust delay as needed
+      callback: () => {
+        this.footstepSoundTimer = null;
+      },
+    });
+  }
+
+  stopFootstepSounds() {
+    if (this.footstepSoundTimer) {
+      this.footstepSoundTimer.remove();
+      this.footstepSoundTimer = null;
+    }
   }
 
   setAnimation(name) {
@@ -66,7 +118,11 @@ export default class Player {
   // FIXME: remove this method and use the startKickback function from utils instead
 
   shoot() {
-    if (this.ammo <= 0) return;
+    if (this.ammo <= 0) {
+      this.scene.sound.add("no-ammo").play();
+      return;
+    }
+    this.scene.sound.add("fire").play();
 
     this.ammo -= 1;
     this.ammo = Phaser.Math.Clamp(this.ammo, 0, this.maxAmmo);
@@ -101,6 +157,7 @@ export default class Player {
     this.scene.cameras.main.flash(300, 255, 0, 0);
     this.scene.cameras.main.shake(200, 0.002);
     this.scene.playerInterface.updateHealthbar();
+    this.playRandomDamageSound();
 
     if (this.health <= 0) {
       // smooth blur effect leading to game over screen
@@ -133,18 +190,18 @@ export default class Player {
   }
 
   heal() {
-    this.health += 1;
+    this.health += 4;
     this.scene.playerInterface.updateHealthbar();
   }
 
   collectAmmo() {
-    this.ammo += 2;
+    this.ammo += 4;
     this.ammo = Phaser.Math.Clamp(this.ammo, 0, this.maxAmmo);
     this.scene.playerInterface.updateAmmoIndicator();
   }
 
   move(direction, jump) {
-    if (this.knockedBack) {
+    if (this.knockedBack || this.disabled) {
       return;
     }
 
@@ -152,10 +209,16 @@ export default class Player {
       this.object.setVelocityX(playerConfig.speedX);
       this.object.flipX = false;
       this.tiltSprite(playerConfig.rotationAngle);
+      if (!this.inAir) {
+        this.playRandomFootstepSound();
+      }
     } else if (direction === DIRECTIONS.LEFT) {
       this.object.setVelocityX(-playerConfig.speedX);
       this.object.flipX = true;
       this.tiltSprite(-playerConfig.rotationAngle);
+      if (!this.inAir) {
+        this.playRandomFootstepSound();
+      }
     } else {
       this.object.setVelocityX(0);
       this.tiltSprite(0);
@@ -163,6 +226,8 @@ export default class Player {
 
     if (jump && !this.inAir) {
       this.object.setVelocityY(playerConfig.speedY);
+      this.jumpSound.play();
+      this.stopFootstepSounds();
     }
 
     if (this.isShooting) {

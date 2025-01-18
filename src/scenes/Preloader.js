@@ -9,6 +9,7 @@ export class Preloader extends Scene {
 
   init() {
     //  A simple progress bar. This is the outline of the bar.
+    this.cameras.main.setBackgroundColor("#000000");
     this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
 
     //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
@@ -86,7 +87,7 @@ export class Preloader extends Scene {
     this.load.atlas("enemy-default", "spritesheets/characters/enemies/darkness.png", "data/atlas/darkness.json");
     this.load.atlas("enemy-attacker", "spritesheets/characters/enemies/red-darkness.png", "data/atlas/darkness.json");
     this.load.atlas("enemy-fast", "spritesheets/characters/enemies/blue-darkness.png", "data/atlas/darkness.json");
-    this.load.atlas("enemy-tank", "spritesheets/characters/enemies/gray-darkness.png", "data/atlas/darkness.json");
+    this.load.atlas("enemy-tank", "spritesheets/characters/enemies/white-darkness.png", "data/atlas/darkness.json");
 
     // Images
     this.load.image("ammo-pickup", "spritesheets/pickups/ammo.png");
@@ -102,6 +103,10 @@ export class Preloader extends Scene {
     this.load.image("ship-2", "spritesheets/ship-2.png");
     this.load.image("ship-3", "spritesheets/ship-3.png");
     this.load.image("dark-particle", "spritesheets/dark-particle.png");
+    this.load.image("blue-particle", "spritesheets/blue-particle.png");
+    this.load.image("red-particle", "spritesheets/red-particle.png");
+    this.load.image("white-particle", "spritesheets/white-particle.png");
+    this.load.image("end-point", "spritesheets/end-point.png");
 
     // UI
     // this.load.spritesheet("healthbar", "ui/healthbar.png", healthbarFrameConfig)
@@ -111,13 +116,40 @@ export class Preloader extends Scene {
     this.load.image("ammo-arrows", "ui/arrows.png");
 
     // Sounds
-    this.load.audio("typing", "sounds/sci-fi-typing.mp3");
+    this.load.audio("story-track", "music/story.wav");
+    this.load.audio("level-track", "music/level.wav");
+    this.load.audio("end-track", "music/end.wav");
+    this.load.audio("typing", "sounds/typing.wav");
     this.load.audio("space-ambient", "sounds/space-ambient.mp3");
     this.load.audio("spaceship-passing-01", "sounds/spaceship-passing01.mp3");
     this.load.audio("spaceship-passing-02", "sounds/spaceship-passing02.mp3");
     this.load.audio("spaceship-passing-03", "sounds/spaceship-passing03.mp3");
-    this.load.audio("health-pickup", "sounds/player/pickups/health.wav");
     this.load.audio("ammo-pickup", "sounds/player/pickups/ammo.wav");
+    this.load.audio("health-pickup", "sounds/player/pickups/health.wav");
+    this.load.audio("barrier-opened", "sounds/barrier_opened.wav");
+    this.load.audio("step1", "sounds/player/footsteps/metal1.wav");
+    this.load.audio("step2", "sounds/player/footsteps/metal2.wav");
+    this.load.audio("step3", "sounds/player/footsteps/metal3.wav");
+    this.load.audio("step4", "sounds/player/footsteps/metal4.wav");
+    this.load.audio("damage1", "sounds/player/damage/pain1.wav");
+    this.load.audio("damage2", "sounds/player/damage/pain2.wav");
+    this.load.audio("damage3", "sounds/player/damage/pain3.wav");
+    this.load.audio("zap", "sounds/player/damage/zap.wav");
+    this.load.audio("slice1", "sounds/player/damage/slicer1.wav");
+    this.load.audio("slice2", "sounds/player/damage/slicer2.wav");
+    this.load.audio("scream1", "sounds/enemy/damage/scream1.wav");
+    this.load.audio("scream2", "sounds/enemy/damage/scream2.wav");
+    this.load.audio("scream3", "sounds/enemy/damage/scream3.wav");
+    this.load.audio("scream4", "sounds/enemy/damage/scream4.wav");
+    this.load.audio("impact1", "sounds/enemy/damage/impact1.wav");
+    this.load.audio("impact2", "sounds/enemy/damage/impact2.wav");
+    this.load.audio("impact3", "sounds/enemy/damage/impact3.wav");
+    this.load.audio("jump", "sounds/player/jump.wav");
+    this.load.audio("flatline", "sounds/player/flatline.wav");
+    this.load.audio("spawn", "sounds/player/bell.wav");
+    this.load.audio("openpanel", "sounds/player/openpanel.wav");
+    this.load.audio("no-ammo", "sounds/player/weapon/empty.wav");
+    this.load.audio("fire", "sounds/player/weapon/fire.wav");
   }
 
   create() {

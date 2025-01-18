@@ -6,6 +6,9 @@ export default class Controls {
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.shootKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
     this.spaceKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
   }
 
   getSpaceKeyPressed() {
@@ -13,7 +16,7 @@ export default class Controls {
   }
 
   getJumpKeyPressed() {
-    return this.cursors.up.isDown;
+    return this.cursors.up.isDown || this.wKey.isDown;
   }
 
   getShootKeyPressed() {
@@ -23,9 +26,9 @@ export default class Controls {
   getPressedDirectionKey() {
     let selectedDirection = DIRECTIONS.NONE;
 
-    if (this.cursors.left.isDown) {
+    if (this.cursors.left.isDown || this.aKey.isDown) {
       selectedDirection = DIRECTIONS.LEFT;
-    } else if (this.cursors.right.isDown) {
+    } else if (this.cursors.right.isDown || this.dKey.isDown) {
       selectedDirection = DIRECTIONS.RIGHT;
     }
 

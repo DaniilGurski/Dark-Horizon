@@ -6,6 +6,7 @@ import { Story } from "./scenes/Story";
 import { Transition } from "./scenes/Transition";
 import { LevelZero } from "./scenes/levels/LevelZero";
 import { GameOver } from "./scenes/GameOver";
+import { Win } from "./scenes/Win";
 
 const config = {
   type: Phaser.CANVAS,
@@ -25,7 +26,7 @@ const config = {
       debug: false,
     },
   },
-  scene: [Boot, Preloader, Story, Transition, LevelZero, GameOver],
+  scene: [Boot, Preloader, Story, Transition, LevelZero, GameOver, Win],
 };
 
 export default new Phaser.Game(config);
