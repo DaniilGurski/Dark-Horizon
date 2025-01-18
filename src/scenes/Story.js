@@ -1,10 +1,23 @@
 import { Scene } from "phaser";
+import { createTextTip } from "../utils/helpers";
 
 export class Story extends Scene {
   constructor() {
     super("Story");
 
-    this.lines = ["First Line.", "Second Line.", "Third Line."];
+    this.lines = [
+      "Welcome, Soldier ! You've almost made it to the mission.",
+      "Site—good work so far, but the real challenge begins now.",
+      "This area has been overrun by alien monstrosities,\n and your objective is clear:",
+      "Eliminate the threat and reclaim this zone.",
+      "Your primary weapon is the AR3,\na powerful tool against these creatures.",
+      "Also, keep an eye out for ammo and first aid kits;\nthey'll be the difference between survival and failure.",
+      "As for the enemy... our intel is limited.",
+      "These creatures cannot see you, but if you cross their path,\n they'll attack without hesitation.",
+      "Worse still, some of them possess unique traits.\nStay sharp and adapt to their behaviors.",
+      "That's all the briefing you get. Now go, soldier.\nProve your worth and make every shot count.",
+      "Good luck—you'll need it.",
+    ];
 
     this.currentLine;
     this.fadingDot;
@@ -22,6 +35,7 @@ export class Story extends Scene {
 
   typeNextLine() {
     const newLine = this.lines[this.progress];
+    const pauseTimer = 0;
     let charIndex = 0;
     let displayText = "";
 
@@ -44,27 +58,15 @@ export class Story extends Scene {
           timer.remove();
           this.typingSound.stop();
           this.controlsEnabled = true;
+        } else if ([".", ",", "!", ";"].includes(newLine[charIndex - 2])) {
+          this.typingSound.stop();
+          timer.delay = 300; // Pause duration after punctuation
+        } else {
+          this.typingSound.play();
+          timer.delay = 50; // Default typing speed
         }
       },
     });
-  }
-
-  createTextTip(x, y, text, icon) {
-    const iconImage = this.add.image(0, 0, icon).setScale(0.6).setOrigin(0, 0);
-    const textObject = this.add
-      .text(54, 0, text, {
-        fontSize: "1.2rem",
-        color: "#ffffff",
-      })
-      .setOrigin(0, 0);
-
-    // Position the text in the center of the icon
-    const containerHeight = iconImage.displayHeight;
-    const textHeight = textObject.height;
-    const textY = (containerHeight - textHeight) / 2;
-    textObject.y = textY;
-
-    return this.add.container(x, y, [iconImage, textObject]);
   }
 
   startTransition() {
@@ -78,10 +80,11 @@ export class Story extends Scene {
 
     this.cursor = this.input.keyboard.createCursorKeys();
     this.typingSound = this.sound.add("typing", { loop: true }).setVolume(0.2);
+    this.sound.add("story-track").play({ loop: true });
 
     this.currentLine = this.add.text(width / 2, height / 2, "", this.currentLineStyles).setOrigin(0.5, 0.5);
-    this.continue = this.createTextTip(width - 210, height - 80, "To continue", "next-icon");
-    this.skip = this.createTextTip(width - 380, height - 80, "To skip", "cross-icon");
+    this.continue = createTextTip(this, width - 210, height - 80, "To continue", "next-icon");
+    this.skip = createTextTip(this, width - 380, height - 80, "To skip", "cross-icon");
 
     // Add a blinking effect to the continue text
     this.add.tween({

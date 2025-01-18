@@ -1,7 +1,7 @@
 // src/scenes/levels/Level.js
 import { Scene } from "phaser";
 import Phaser from "phaser";
-import { getCustomProperty } from "../../utils/helpers";
+import { createTextTip, getCustomProperty } from "../../utils/helpers";
 import { HealthPickup } from "../../objects/pickups/health-pickup";
 import { AmmoPickup } from "../../objects/pickups/ammo-pickup";
 import Controls from "../../utils/controls";
@@ -14,6 +14,7 @@ import DarknessEnemy from "../../objects/enemies/darknessEnemy";
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
 import { startKickback } from "../../utils/effects";
 import { playerConfig } from "../../utils/config";
+import * as FontLoader from "webfontloader";
 
 export class Level extends Scene {
   constructor(key) {
@@ -24,6 +25,7 @@ export class Level extends Scene {
     this.enemies;
     this.pickups;
     this.barriers;
+    this.endingFadeTriggered = false;
     this.controls;
     this.controlPanels;
     this.currentCurrentPanel;
@@ -33,6 +35,8 @@ export class Level extends Scene {
     this.decorLayer;
     this.lastTurretShotTime = 0;
     this.turretTraps = [];
+    this.damageSoundTimer = null;
+    this.levelTrack;
   }
 
   preload() {
@@ -41,6 +45,13 @@ export class Level extends Scene {
   }
 
   create() {
+    this.zapSound = this.sound.add("zap");
+    this.zapSound.volume = 0.4;
+    this.levelTrack = this.sound.add("level-track");
+    this.levelTrack.volume = 5.5;
+    this.levelTrack.play({ loop: true });
+    this.cameras.main.fadeIn(1000, 0, 0, 0);
+    this.endingFadeTriggered = false;
     this.controls = new Controls(this);
 
     // Initialize groups
@@ -51,6 +62,7 @@ export class Level extends Scene {
 
     // Set up camera
     this.cameras.main.setZoom(2);
+    // this.addMovementControlsTextTip();
   }
 
   addMap(mapKey, tilesetKey = "level-tileset", tilesetImageKey = "terrain-tileset") {
@@ -187,7 +199,6 @@ export class Level extends Scene {
     });
 
     this.physics.add.overlap(this.player.object, this.controlPanels, (player, panel) => {
-      console.log("Player is overlapping a control panel");
       // Store the overlapping panel so we can handle input in 'update'
       this.currentPanel = panel;
     });
@@ -209,6 +220,7 @@ export class Level extends Scene {
 
         this.physics.add.overlap(this.player.object, trap, () => {
           if (!trap.isOnCooldown) {
+            this.player.playRandomDamageSound(true);
             this.player.disableMovement();
             this.player.takeDamage(damage);
             startKickback(this.player.object, 500, 200, -250, this.player.object.flipX, this.player.kickbackTween);
@@ -237,8 +249,9 @@ export class Level extends Scene {
     enemySprite.owner.decreaseHealth();
   }
 
-  changeScene(sceneKey) {
-    this.scene.start(sceneKey);
+  changeScene(sceneKey, attrs = null) {
+    this.levelTrack.stop();
+    this.scene.start(sceneKey, attrs);
   }
 
   update() {
@@ -259,6 +272,7 @@ export class Level extends Scene {
       // add overlap between player and turret
       this.physics.add.overlap(this.player.object, turret, () => {
         if (!turret.isOnCooldown && turret.anims.currentFrame.index >= 19) {
+          this.zapSound.play();
           this.player.disableMovement();
           this.player.takeDamage(3);
           startKickback(this.player.object, 500, 300, -250, this.player.object.flipX, this.player.kickbackTween);
@@ -270,6 +284,9 @@ export class Level extends Scene {
 
     // If player presses SPACE and is overlapping a panel:
     if (this.currentPanel && spaceKeyPressed) {
+      this.sound.add("openpanel").play();
+      this.sound.add("barrier-opened").play();
+
       const panelBarrierId = this.currentPanel.barrierId;
 
       // Find the barrier with the matching ID
@@ -291,15 +308,40 @@ export class Level extends Scene {
       this.currentPanel = null;
     }
 
+    // Custom overlap end detection to chekc if player is no longer overlapping a panel
+    if (this.currentPanel) {
+      const playerBounds = this.player.object.getBounds();
+      const panelBounds = this.currentPanel.getBounds();
+      if (!Phaser.Geom.Intersects.RectangleToRectangle(playerBounds, panelBounds)) {
+        this.currentPanel = null;
+      }
+    }
+
+    // Show or hide control panel text based on player proximity
+    if (this.currentPanel) {
+      this.playerInterface.showControlPanelText(true);
+    } else {
+      this.playerInterface.showControlPanelText(false);
+    }
+
     // If Player is below the world (or off-screen), kill them.
     if (this.player.object.y > this.physics.world.bounds.height) {
       this.changeScene("GameOver");
     }
+
+    if (this.player.object.x < 0) {
+      // disable gravity
+      this.player.object.body.allowGravity = false;
+      this.player.disabled = true;
+      this.player.object.setVelocityX(-100);
+
+      if (!this.endingFadeTriggered) {
+        this.endingFadeTriggered = true;
+        this.cameras.main.fadeOut(1000, 0, 0, 0);
+        this.cameras.main.once("camerafadeoutcomplete", () => {
+          this.changeScene("Win", { score: this.player.score });
+        });
+      }
+    }
   }
 }
-
-// TODO: kill bullet when it leaves the screen view
-// TODO: change enemy direction when it bumbs into a boundary (does not work for none standard enemies)
-// TODO: add different death particles for each enemy (?)
-// TODO: add small coin like pickups for fun
-// TODO: add small ending scene
