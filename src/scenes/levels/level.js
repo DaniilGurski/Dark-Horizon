@@ -1,4 +1,3 @@
-// src/scenes/levels/Level.js
 import { Scene } from "phaser";
 import Phaser from "phaser";
 import { getCustomProperty } from "../../utils/helpers";
@@ -343,5 +342,3 @@ export class Level extends Scene {
     }
   }
 }
-
-// TODO: Add more control options
