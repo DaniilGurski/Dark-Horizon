@@ -1,4 +1,3 @@
-// src/scenes/GameOver.js
 import { Scene } from "phaser";
 import { createTextTip } from "../utils/helpers";
 
@@ -8,7 +7,6 @@ export class GameOver extends Scene {
   }
 
   create() {
-    const { width, height } = this.sys.game.config;
     this.flatlineSound = this.sound.add("flatline");
     this.flatlineSound.volume = 0.2;
     this.flatlineSound.play();
@@ -53,39 +51,4 @@ export class GameOver extends Scene {
       },
     });
   }
-
-  // createPlayAgainButton() {
-  //     const { width, height } = this.sys.game.config;
-
-  //     // Add 'Play Again' button with zero alpha
-  //     const playAgainButton = this.add.text(width / 2, height / 2 + 50, 'Play Again', {
-  //         fontSize: '32px',
-  //         color: '#ffffff',
-  //         backgroundColor: '#000000',
-  //         padding: { x: 10, y: 5 },
-  //     })
-  //         .setOrigin(0.5)
-  //         .setInteractive();
-  //     playAgainButton.alpha = 0;
-
-  //     // Fade in the button
-  //     this.tweens.add({
-  //         targets: playAgainButton,
-  //         alpha: 1,
-  //         duration: 1000,
-  //     });
-
-  //     // Button hover effect
-  //     playAgainButton.on('pointerover', () => {
-  //         playAgainButton.setStyle({ color: '#ffff00' });
-  //     });
-  //     playAgainButton.on('pointerout', () => {
-  //         playAgainButton.setStyle({ color: '#ffffff' });
-  //     });
-
-  //     // Restart the game on button click
-  //     playAgainButton.on('pointerdown', () => {
-  //         this.scene.start('LevelZero');
-  //     });
-  // }
 }

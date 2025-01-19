@@ -47,6 +47,7 @@ export default class Player {
     ];
     this.trapDamageSounds = [this.scene.sound.add("slice1"), this.scene.sound.add("slice2")];
     this.footstepSoundTimer = null;
+    this.noAmmoSoundTimer = null;
     this.jumpSound = this.scene.sound.add("jump");
     this.jumpSound.volume = 0.4;
     this.scene.sound.add("spawn").play();
@@ -68,9 +69,24 @@ export default class Player {
 
     // Add a small delay before the next footstep sound is played
     this.footstepSoundTimer = this.scene.time.addEvent({
-      delay: 300, // Adjust delay as needed
+      delay: 300,
       callback: () => {
         this.footstepSoundTimer = null;
+      },
+    });
+  }
+
+  playNoAmmoSound() {
+    if (this.noAmmoSoundTimer) {
+      return;
+    }
+
+    this.scene.sound.add("no-ammo").play();
+
+    this.noAmmoSoundTimer = this.scene.time.addEvent({
+      delay: 200,
+      callback: () => {
+        this.noAmmoSoundTimer = null;
       },
     });
   }
@@ -115,11 +131,9 @@ export default class Player {
     });
   }
 
-  // FIXME: remove this method and use the startKickback function from utils instead
-
   shoot() {
     if (this.ammo <= 0) {
-      this.scene.sound.add("no-ammo").play();
+      this.playNoAmmoSound();
       return;
     }
     this.scene.sound.add("fire").play();
@@ -191,6 +205,11 @@ export default class Player {
 
   heal() {
     this.health += 4;
+
+    if (this.health > this.maxHealth) {
+      this.health = this.maxHealth;
+    }
+
     this.scene.playerInterface.updateHealthbar();
   }
 

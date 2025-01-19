@@ -9,18 +9,22 @@ export default class Controls {
     this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    this.tabKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB);
+
+    // disable context menu on right click
+    this.scene.input.mouse.disableContextMenu();
   }
 
   getSpaceKeyPressed() {
-    return Phaser.Input.Keyboard.JustDown(this.spaceKey);
+    return this.spaceKey.isDown;
   }
 
   getJumpKeyPressed() {
-    return this.cursors.up.isDown || this.wKey.isDown;
+    return this.cursors.up.isDown || this.wKey.isDown || this.tabKey.isDown;
   }
 
   getShootKeyPressed() {
-    return Phaser.Input.Keyboard.JustDown(this.shootKey);
+    return Phaser.Input.Keyboard.JustDown(this.shootKey) || this.scene.input.mousePointer.leftButtonDown();
   }
 
   getPressedDirectionKey() {

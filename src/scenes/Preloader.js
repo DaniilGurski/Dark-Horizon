@@ -23,12 +23,6 @@ export class Preloader extends Scene {
   }
 
   preload() {
-    // TODO: Move to boot scene ?
-    const healthbarFrameConfig = {
-      frameWidth: 50,
-      frameHeight: 10,
-    };
-
     const planetFrameConfig = {
       frameWidth: 100,
       frameHeight: 100,
@@ -109,7 +103,6 @@ export class Preloader extends Scene {
     this.load.image("end-point", "spritesheets/end-point.png");
 
     // UI
-    // this.load.spritesheet("healthbar", "ui/healthbar.png", healthbarFrameConfig)
     this.load.atlas("healthbar", "ui/healthbar.png", "data/atlas/healthbar.json");
     this.load.image("cross-icon", "ui/cross.png");
     this.load.image("next-icon", "ui/next.png");
@@ -153,7 +146,6 @@ export class Preloader extends Scene {
   }
 
   create() {
-    console.log("Preloader scene loaded");
     this.scene.start("Story");
     this.createAnimations();
     this.createAtlasAnimations("player", "player-animations");
@@ -184,8 +176,6 @@ export class Preloader extends Scene {
         yoyo: animation.yoyo,
       });
     });
-
-    console.log(animations);
   }
 
   createAtlasAnimations(atlas, requestedAnimations) {
@@ -204,8 +194,5 @@ export class Preloader extends Scene {
         yoyo: animation.yoyo,
       });
     });
-
-    console.log(`${requestedAnimations} loaded`);
-    console.log(animations);
   }
 }

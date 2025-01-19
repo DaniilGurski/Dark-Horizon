@@ -62,7 +62,7 @@ export class PlayerInterface {
       .setDepth(1002);
 
     const shootText = this.scene.add
-      .text(tutorialTextX + 250, tutorialTextY - 170, "X to shoot", {
+      .text(tutorialTextX + 250, tutorialTextY - 170, "X / Right mouse click to shoot", {
         fontSize: "0.875rem",
         fontWeight: "700",
         fill: "#ffffff",

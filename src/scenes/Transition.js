@@ -16,7 +16,6 @@ export class Transition extends Scene {
       this.time.delayedCall(
         index * 1500,
         () => {
-          console.log("Playing sound", index);
           this.sound.add(`spaceship-passing-0${index}`).play();
         },
         [],
