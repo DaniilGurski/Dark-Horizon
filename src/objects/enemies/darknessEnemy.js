@@ -40,15 +40,18 @@ export default class DarknessEnemy {
   constructor(scene, x, y, obstacleLayer, type = "default") {
     this.scene = scene;
     this.type = type;
-    // Merge the variant config with your defaults
+
     this.config = ENEMY_VARIANTS[type] || ENEMY_VARIANTS["default"];
     this.enemyAnimationKey = `${type}-enemy`;
+
     // Assign stats
     this.health = this.config.health;
     this.damage = this.config.damage;
     this.speed = this.config.speed;
+
     // Create the sprite with the specified asset and scale
     this.object = scene.physics.add.sprite(x, y, `enemy-${type}`).setScale(this.config.scale);
+
     // Random patrol direction
     this.directions = ["left", "right"];
     this.currentDirection = this.directions[Math.floor(Math.random() * this.directions.length)];
@@ -60,8 +63,8 @@ export default class DarknessEnemy {
     // Add collision
     scene.physics.add.collider(this.object, obstacleLayer);
     this.object.owner = this;
-    // Optional particle emitter for visuals
 
+    // Optional particle emitter for visuals
     this.particleColor = ENEMY_VARIANTS[type].particle;
 
     this.emitter = this.scene.add.particles(this.object.x, this.object.y, this.particleColor, {

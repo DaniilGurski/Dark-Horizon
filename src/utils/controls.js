@@ -16,11 +16,11 @@ export default class Controls {
   }
 
   getSpaceKeyPressed() {
-    return Phaser.Input.Keyboard.JustDown(this.spaceKey);
+    return this.spaceKey.isDown;
   }
 
   getJumpKeyPressed() {
-    return this.cursors.up.isDown || this.wKey.isDown || this.spaceKey.isDown || this.tabKey.isDown;
+    return this.cursors.up.isDown || this.wKey.isDown || this.tabKey.isDown;
   }
 
   getShootKeyPressed() {

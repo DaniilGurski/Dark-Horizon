@@ -8,7 +8,6 @@ import Barrier from "../../objects/barriers/barrier";
 import ControlPanel from "../../objects/barriers/control-panel";
 import Player from "../../objects/player";
 import { PlayerInterface } from "../../interface";
-import Dummy from "../../objects/enemies/dummy";
 import DarknessEnemy from "../../objects/enemies/darknessEnemy";
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
 import { startKickback } from "../../utils/effects";
@@ -25,7 +24,7 @@ export class Level extends Scene {
     this.endingFadeTriggered = false;
     this.controls;
     this.controlPanels;
-    this.currentCurrentPanel;
+    this.currentPanel = null;
     this.obstacleLayer;
     this.enemyBoundaries;
     this.trapsDataLayer;

@@ -16,7 +16,7 @@ export class Story extends Scene {
       "These creatures cannot see you, but if you cross their path, they'll attack without hesitation.",
       "Worse still, some of them possess unique traits. Stay sharp and adapt to their behaviors.",
       "That's all the briefing you get. Now go, soldier. Prove your worth and make every shot count.",
-      "Good luck—you'll need it.",
+      "Good luck-you'll need it.",
     ];
 
     this.currentLine;
@@ -35,7 +35,6 @@ export class Story extends Scene {
 
   typeNextLine() {
     const newLine = this.lines[this.progress];
-    const pauseTimer = 0;
     let charIndex = 0;
     let displayText = "";
 
@@ -58,7 +57,7 @@ export class Story extends Scene {
           timer.remove();
           this.typingSound.stop();
           this.controlsEnabled = true;
-        } else if ([".", ",", "!", ";"].includes(newLine[charIndex - 2])) {
+        } else if ([".", ",", "!", ";", "-"].includes(newLine[charIndex - 2])) {
           this.typingSound.stop();
           timer.delay = 300; // Pause duration after punctuation
         } else {

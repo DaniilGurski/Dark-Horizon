@@ -1,4 +1,4 @@
-# [ GAME NAME ]
+# Dark Horizon
 
 ## Credits:
 
