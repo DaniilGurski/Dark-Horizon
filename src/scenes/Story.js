@@ -101,13 +101,14 @@ export class Story extends Scene {
 
   update() {
     const { right } = this.cursor;
+    const enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
     if (this.progress >= this.lines.length) {
       this.startTransition();
     }
 
     // Move to the next line of text on right arrow key press
-    else if (Phaser.Input.Keyboard.JustDown(right) && this.controlsEnabled) {
+    else if ((Phaser.Input.Keyboard.JustDown(right) || enterKey.isDown) && this.controlsEnabled) {
       this.progress += 1;
       this.typeNextLine();
     }
