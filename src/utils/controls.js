@@ -10,17 +10,18 @@ export default class Controls {
     this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     this.tabKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TAB);
+    this.eKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
     // disable context menu on right click
     this.scene.input.mouse.disableContextMenu();
   }
 
-  getSpaceKeyPressed() {
-    return this.spaceKey.isDown;
+  getEkeyPressed() {
+    return this.eKey.isDown;
   }
 
   getJumpKeyPressed() {
-    return this.cursors.up.isDown || this.wKey.isDown || this.tabKey.isDown;
+    return this.cursors.up.isDown || this.wKey.isDown || this.tabKey.isDown || this.spaceKey.isDown;
   }
 
   getShootKeyPressed() {
