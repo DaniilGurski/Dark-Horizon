@@ -85,7 +85,7 @@ export class PlayerInterface {
     });
 
     this.controlPanelText = this.scene.add
-      .text(tutorialTextX + 250, tutorialTextY - 170, "Press SPACE to interact", {
+      .text(tutorialTextX + 250, tutorialTextY - 170, "Press E to interact", {
         fontSize: "0.875rem",
         fill: "#ffffff",
         fontWeight: "700",

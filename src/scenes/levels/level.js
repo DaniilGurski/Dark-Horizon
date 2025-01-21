@@ -254,7 +254,7 @@ export class Level extends Scene {
     const direction = this.controls.getPressedDirectionKey();
     const jumpKeyPressed = this.controls.getJumpKeyPressed();
     const shootKeyPressed = this.controls.getShootKeyPressed();
-    const spaceKeyPressed = this.controls.getSpaceKeyPressed();
+    const eKeyPressed = this.controls.getEkeyPressed();
 
     this.player.update(direction, jumpKeyPressed, shootKeyPressed);
 
@@ -279,7 +279,7 @@ export class Level extends Scene {
     });
 
     // If player presses SPACE and is overlapping a panel:
-    if (this.currentPanel && spaceKeyPressed) {
+    if (this.currentPanel && eKeyPressed) {
       this.sound.add("openpanel").play();
       this.sound.add("barrier-opened").play();
 
