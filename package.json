@@ -1,7 +1,7 @@
 {
-  "name": "Dark Horizon",
+  "name": "dark-horizon",
   "description": "Ett spel som skapats inom ramen för gymnasiearbetets forskning.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "contributors": [
     {
