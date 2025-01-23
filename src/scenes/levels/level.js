@@ -58,7 +58,20 @@ export class Level extends Scene {
 
     // Set up camera
     this.cameras.main.setZoom(2);
-    // this.addMovementControlsTextTip();
+
+    // Reduce particle effects when battery is low
+    if (navigator.getBattery) {
+      navigator.getBattery().then((battery) => {
+        if (battery.level < 0.3) {
+          // Below 30%
+          this.reducedEffects = true;
+          // Reduce particle counts
+          this.emitters?.forEach((emitter) => {
+            emitter.quantity.propertyValue *= 0.5;
+          });
+        }
+      });
+    }
   }
 
   addMap(mapKey, tilesetKey = "level-tileset", tilesetImageKey = "terrain-tileset") {
@@ -101,6 +114,19 @@ export class Level extends Scene {
 
     // Animate tiles with plugin
     this.sys.animatedTiles.init(map);
+
+    // Optimize physics
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.physics.world.TILE_BIAS = 32; // Reduce collision checks
+
+    // Disable physics on off-screen objects
+    this.physics.world.on("worldbounds", () => {
+      this.bullets.getChildren().forEach((bullet) => {
+        if (!this.cameras.main.worldView.contains(bullet.x, bullet.y)) {
+          bullet.body.enable = false;
+        }
+      });
+    });
 
     // Add overlap between player and spikes
     return map;
@@ -299,7 +325,7 @@ export class Level extends Scene {
       this.currentPanel.anims?.stop();
       this.currentPanel.setTexture("control-panel-inactive");
 
-      // Optionally remove reference so we don't trigger again unless we overlap again
+      // remove reference so we don't trigger again unless we overlap again
       this.controlPanels.remove(this.currentPanel);
       this.currentPanel = null;
     }
